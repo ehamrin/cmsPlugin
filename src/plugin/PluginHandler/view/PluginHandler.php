@@ -21,7 +21,7 @@ class PluginHandler
                 $data = $application->GetPluginMeta($available);
                 $ret .= '<tr><td>' . (!empty($data->Name) ? $data->Name : $available) . '</td><td>
                 <div class="onoffswitch">
-                    <input type="hidden" name="plugin[' . $available . '][action]" value="delete"/>
+                    <input type="hidden" name="plugin[' . $available . '][action]" value=""/>
                     <input type="checkbox" name="plugin[' . $available . '][value]" id="myonoffswitch_' . $available . '" class="onoffswitch-checkbox checkbox-submit" ' . (in_array($available, $installed) ? 'checked="checked"' : '') . '/>
                     <label class="onoffswitch-label" for="myonoffswitch_' . $available . '">
                         <span class="onoffswitch-inner"></span>

@@ -9,6 +9,10 @@ class PluginFacade
      */
     private $reflect;
     private $meta;
+
+    /**
+     * @var $instance IPlugin
+     */
     private $instance;
 
     /**
@@ -32,6 +36,9 @@ class PluginFacade
 
     public function AddInstance(\Application $application){
         $this->instance = $this->reflect->newInstance($application);
+        if($this->instance->IsInstalled() == false){
+            $this->instance->Install();
+        }
     }
 
     public function RemoveInstance(){

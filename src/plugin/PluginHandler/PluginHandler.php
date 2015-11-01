@@ -33,13 +33,20 @@ class PluginHandler implements \IPlugin
 
     public function AdminIndex(...$params){
         if($this->view->WasSubmitted()){
-            try{
                 $this->model->Save($this->view->GetData());
+
+                foreach($this->view->GetData() as $plugin => $action){
+                    try{
+                        $instance = $this->application->GetPlugin($plugin);
+                        if($action == 'delete-data'){
+                            $instance->Uninstall();
+                        }
+                    }catch(\Exception $e){
+                    }
+                }
+
+
                 $this->view->Success();
-            }catch(\Exception $e){
-
-            }
-
         }
         return $this->view->AdminList($this->application);
     }
