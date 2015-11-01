@@ -1,0 +1,329 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
+@import url('navigation.css');
+
+nav{
+    position: fixed;
+    left: 0;
+    width: 200px;
+    top: 100px;
+    bottom: 0;
+    background: #2d2d2d;
+
+}
+
+header{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100px;
+    z-index: 5;
+    background: url('../images/header-background-2.png') no-repeat;
+    padding-left: 215px;
+    color: #fff;
+}
+main{
+    padding: 15px;
+    position: absolute;
+    top: 100px;
+    min-height:calc(100% - 130px);
+    left: 200px;
+    overflow: auto;
+
+    right: 0;
+    background: #d1d1d1;
+    -webkit-box-shadow:inset 10px 10px 30px -15px rgba(0,0,0,1);
+    box-shadow:inset 10px 10px 30px -15px rgba(0,0,0,1);
+
+}
+
+main .wrapper{
+    background: #FFF;
+    padding: 10px;
+
+}
+
+
+table tr td .edit,
+table tr td .edit:hover,
+table tr td .edit:active,
+table tr td .edit:visited
+{
+    color: #5dc2f1;
+}
+
+table tr td .delete,
+table tr td .delete:hover,
+table tr td .delete:active,
+table tr td .delete:visited{
+    color: #7a090c;
+}
+
+
+.form-group{
+    position: relative;
+    margin: 10px 0;
+    max-width: 80%;
+}
+
+.form-group label{
+    display: inline-block;
+    width: 29%;
+    max-width: 150px;
+    text-align: right;
+    box-sizing: border-box;
+    padding-right: 10px;
+    vertical-align: top;
+}
+
+form > .error-messages{
+    padding: 15px;
+    background-color: #ff7b78;
+    list-style-type: none;
+    color: #691014;
+    text-align: center;
+}
+
+.form-group .error-messages{
+    position: absolute;
+    top: 4px;
+    height: 15px;
+    width: 15px;
+    background: url("../images/error-icon.png") no-repeat top left;
+    background-size: 15px 15px;
+    left: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+input:hover ~ ul,
+input:focus ~ ul,
+.form-group .error-messages:hover{
+    width: 200px;
+    height: auto;
+}
+
+.form-group .error-messages li{
+    display: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+
+input:hover ~ .error-messages li,
+input:focus ~ .error-messages li,
+.form-group .error-messages:hover li{
+    display: block;
+    width: 200px;
+}
+
+input,
+select,
+textarea{
+    width: 70%;
+    box-sizing: border-box;
+    padding: 5px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    color: #333;
+    vertical-align: top;
+    resize: none;
+}
+
+.radio-group{
+    display: inline;
+}
+
+.radio-group label{
+    width: auto;
+    display: inline;
+    text-align: left;
+}
+
+input[type="radio"],
+input[type="checkbox"]
+{
+    width: auto;
+}
+
+
+
+
+
+#login_form{
+    content: '';
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url('../images/login-background.png') no-repeat center center;
+    background-size: cover;
+    z-index: 149;
+    overflow: auto;
+}
+
+#login_form form{
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 200px);
+    height: auto;
+    transform:translateY(-50%);
+    width: 400px;
+    background: rgba(255,255,255,0.5);
+    z-index: 150;
+    padding: 20px;
+}
+
+
+#login_form form input{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+#login_form form .button,
+#login_form form button{
+    background: #5dc2f1;
+    border: 1px solid #5dc2f1;
+    color: #FFF;
+    width: 100%;
+    margin-left: 0;
+    font-weight: 700;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+#login_form form .button:hover{
+    background: #336e8d;
+    border: 1px solid #336e8d;
+}
+#login_form form .form-group{
+    width: auto;
+    max-width: 100%;
+}
+#login_form form label{
+    display: block;
+    width: auto;
+    max-width: 100%;
+    text-align: left;
+    font-weight: 700;
+}
+
+#login_form form legend{
+    font-weight: 700;
+    font-size: 20px;
+}
+
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+    background-color: #f7f7f7;
+    background-image: none;
+    color: rgb(0, 0, 0);
+    -webkit-box-shadow: 0 0 0px 1000px #f7f7f7 inset;
+}
+
+
+/*
+ *   Switch https://proto.io/freebies/onoff/
+ */
+
+.onoffswitch {
+    position: relative;
+    width: 86px;
+    display: inline-block;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+
+.form-group .onoffswitch-label, .onoffswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid #757575;
+    border-radius: 50px;
+
+    width: auto;
+    text-align: inherit;
+    box-sizing: border-box;
+    padding-right: 0;
+    vertical-align: inherit;
+}
+
+.onoffswitch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    transition: margin 0.15s ease-in 0s;
+}
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 15px;
+    padding: 0;
+    line-height: 15px;
+    font-size: 15px;
+    color: white;
+    font-family: Trebuchet, Arial, sans-serif;
+    font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner:before {
+    content: "";
+    padding-left: 20px;
+    background-color: #66E155;
+    color: #FFFFFF;
+}
+
+.onoffswitch-inner:after {
+    content: "";
+    padding-right: 20px;
+    background-color: #FF7B78;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.onoffswitch-switch {
+    display: block;
+    width: 15px;
+    margin: 0px;
+    background: #FFFFFF;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 67px;
+    border: 2px solid #757575;
+    border-radius: 50px;
+    transition: all 0.15s ease-in 0s;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+}
+
+.admin-panel-item{
+    box-sizing: border-box;
+    padding: 10px;
+    text-align: center;
+}
+
+.admin-panel-item h1{
+    font-size: 20px;
+    border-bottom: 1px solid #939391;
+    padding: 10px 0px;
+    margin: 0px;
+    color: #fff;
+    background-color: #C4C4C2;
+}
