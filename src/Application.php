@@ -52,12 +52,8 @@ class Application
 
         foreach($plugins as $plugin) {
 
-            $pluginFile =  self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php';
-            $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
-
             try{
-                $helper = new PluginFacade($pluginClassName, $pluginFile);
-                $this->plugins[$helper->GetPluginName()] = $helper;
+                $this->plugins[$plugin] = $this->CreatePluginFacade($plugin);
 
             }catch(PluginNotValidException $e){
                 //It's not a valid plugin
@@ -145,5 +141,23 @@ class Application
     public function GetPluginMeta(\string $plugin)
     {
         return $this->plugins[$plugin]->GetMeta();
+    }
+
+    public function InstallPlugin($plugin){
+        if(!isset($this->plugins[$plugin]) || !$this->plugins[$plugin]->Exists()){
+            $this->plugins[$plugin] = $this->CreatePluginFacade($plugin);
+        }
+
+        $plugin = $this->GetPlugin($plugin);
+
+        if(!$plugin->IsInstalled()){
+            $plugin->Install();
+        }
+    }
+
+    public function CreatePluginFacade($plugin){
+        $pluginFile =  self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php';
+        $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
+        return new PluginFacade($pluginClassName, $pluginFile);
     }
 }

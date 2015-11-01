@@ -37,9 +37,10 @@ class PluginHandler implements \IPlugin
 
                 foreach($this->view->GetData() as $plugin => $action){
                     try{
-                        $instance = $this->application->GetPlugin($plugin);
                         if($action == 'delete-data'){
-                            $instance->Uninstall();
+                            $this->application->GetPlugin($plugin)->Uninstall();
+                        }elseif($action == 'Install'){
+                            $this->application->InstallPlugin($plugin);
                         }
                     }catch(\Exception $e){
                     }
