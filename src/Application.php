@@ -20,14 +20,14 @@ class Application
         $this->BindPlugins();
         $content = false;
 
-        foreach($this->plugins as $plugin) {
+        foreach($this->plugins as $name => $plugin) {
             $event = 'HookRootAccess';
 
-            if($plugin->GetReflection() != null && $plugin->GetReflection()->hasMethod($event)) {
+            if($plugin->Exists() && $plugin->GetReflection()->hasMethod($event)) {
                 $reflectMethod = $plugin->GetReflection()->getMethod($event);
 
                 //Create a new instance of the class
-                $instance = $this->GetPlugin($plugin->GetReflection()->getShortName());
+                $instance = $this->GetPlugin($name);
                 if ($reflectMethod->invoke($instance, $action)) {
                     $content = $instance->Init($action, ...$url);
                 }
@@ -52,14 +52,16 @@ class Application
 
         foreach($plugins as $plugin) {
 
-            $pluginFile =  $this->GetPluginFilePath($plugin);
+            $pluginFile =  self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php';
             $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
 
-            if(is_file($pluginFile)){
-                $reflectClass = new ReflectionClass($pluginClassName);
-                if($reflectClass->implementsInterface('\\IPlugin')) {
-                    $this->plugins[$reflectClass->getShortName()] = new PluginFacade($reflectClass, $this->GeneratePluginMeta($reflectClass->getShortName()));
-                }
+            try{
+                $helper = new PluginFacade($pluginClassName, $pluginFile);
+                $this->plugins[$helper->GetPluginName()] = $helper;
+
+            }catch(PluginNotValidException $e){
+                //It's not a valid plugin
+                // TODO Show exception message
             }
         }
 
@@ -80,7 +82,7 @@ class Application
     }
 
     public function GetConstantPlugins(){
-        return array('Admin', 'Authentication', 'PluginHandler');
+        return array('Admin', 'Authentication', 'PluginHandler', 'Settings');
     }
 
     /**
@@ -95,7 +97,7 @@ class Application
 
                 //Create a new instance of the class
                 /* @var $instance IPlugin */
-                $instance = $this->GetPlugin($plugin->GetReflection()->getShortName());
+                $instance = $this->GetPlugin($name);
 
                 $list = $reflectMethod->invoke($instance,...$args);
 
@@ -136,69 +138,19 @@ class Application
 
     public function GetPlugin(\string $plugin) : IPlugin
     {
-        if($this->plugins[$plugin]->GetInstance() == null && $this->plugins[$plugin]->GetReflection() != null){
-
-            $this->plugins[$plugin]->AddInstance($this->plugins[$plugin]->GetReflection()->newInstance($this));
+        if($this->plugins[$plugin]->HasInstance() && $this->plugins[$plugin]->Exists()){
+            $this->plugins[$plugin]->AddInstance($this);
         }
 
-        if($this->plugins[$plugin]->GetInstance() == null){
+        if(!$this->plugins[$plugin]->HasInstance()){
             throw new \Exception('Plugin ' . $plugin . ' doesn\'t exist');
         }
+
         return $this->plugins[$plugin]->GetInstance();
-    }
-
-    private function GeneratePluginMeta(\string $plugin)
-    {
-        $pluginFile = $this->GetPluginFilePath($plugin);
-        $inComment = false;
-        $obj = new stdClass();
-
-        $lookFor = array(
-            'Name',
-            'Description',
-            'Author',
-            'Version',
-            'Icon'
-        );
-
-        foreach($lookFor as $name){
-            $obj->$name = '';
-        }
-
-        if(file_exists($pluginFile)){
-
-            foreach(file($pluginFile) as $line){
-                if(strpos($line, '/*') !== false){
-                    $inComment = true;
-                }
-                if($inComment){
-                    //Remove asterisks
-                    $line = str_replace(array('/* ', '* '), '', $line);
-
-                    foreach($lookFor as $name){
-                        if(strpos($line, $name . ':') !== false){
-                            $line = str_replace($name . ':', '', $line);
-                            $obj->{$name} = trim($line);
-                        }
-                    }
-
-                    if(strpos($line, '*/') !== false){
-                        $inComment = false;
-                    }
-                }
-
-            }
-        }
-        return $obj;
     }
 
     public function GetPluginMeta(\string $plugin)
     {
         return $this->plugins[$plugin]->GetMeta();
-
-    }
-
-    private function GetPluginFilePath($plugin){
-        return self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php';
     }
 }
