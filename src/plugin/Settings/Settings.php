@@ -23,8 +23,23 @@ class Settings implements \IPlugin
 
 
     function Init($method="Index", ...$params){
-        return $this->Index();
+        return $this->AdminIndex();
     }
+
+    public function Index(...$params)
+    {
+        return "Settings index";
+    }
+
+    public function AdminIndex(...$params)
+    {
+        if($this->view->WasSubmitted()){
+            $this->model->Save(...$this->view->GetSettings());
+            $this->view->EditSuccess();
+        }
+        return $this->view->ViewSettings();
+    }
+
 
     public function Install(){
         //Setup table
@@ -39,14 +54,7 @@ class Settings implements \IPlugin
         return true;
     }
 
-    public function Index(...$params)
-    {
-        if($this->view->WasSubmitted()){
-            $this->model->Save(...$this->view->GetSettings());
-            $this->view->EditSuccess();
-        }
-        return $this->view->ViewSettings();
-    }
+
 
     /*
      * ------------------------------------------------------

@@ -115,9 +115,7 @@ class Application
     public function IsAuthenticated() : \bool
     {
         if($this->PluginExists('Authentication')){
-            /* @var $authenticationPlugin \plugin\Authentication\Authentication*/
-            $authenticationPlugin = $this->GetPlugin('Authentication');
-            return $authenticationPlugin->IsLoggedIn();
+            return \plugin\Authentication\model\UserModel::IsAuthenticated();
         }
 
         return true;
@@ -126,19 +124,14 @@ class Application
     public function GetUser()
     {
         if($this->PluginExists('Authentication') && $this->IsAuthenticated()){
-            $userModel = $this->plugins['Authentication']->GetReflection()->getProperty('model');
-            $userModel->setAccessible(true);
-            $userModel = $userModel->getValue($this->GetPlugin('Authentication'));
-            /* @var $userModel \plugin\Authentication\model\UserModel */
-            return $userModel->GetLoggedInUser();
+            return \plugin\Authentication\model\UserModel::GetLoggedInUser();
         }
-
         return false;
     }
 
     public function GetPlugin(\string $plugin) : IPlugin
     {
-        if($this->plugins[$plugin]->HasInstance() && $this->plugins[$plugin]->Exists()){
+        if(!$this->plugins[$plugin]->HasInstance() && $this->plugins[$plugin]->Exists()){
             $this->plugins[$plugin]->AddInstance($this);
         }
 

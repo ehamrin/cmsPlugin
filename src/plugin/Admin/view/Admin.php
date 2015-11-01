@@ -21,6 +21,7 @@ class Admin
 
         if($this->application->IsAuthenticated()){
             $items = "";
+            $items .= '<li><a href="/admin/"><i class="fa fa-home"></i>&nbsp Admin panel</a></li>';
             foreach ($this->application->InvokeEvent("AdminItems") as $event) {
                 /* @var $event \Event */
                 foreach ($event->GetData() as $navitem) {
@@ -46,9 +47,7 @@ class Admin
 
                 }
             }
-            if($this->application->IsAuthenticated()){
-                $items .= '<li><a href="/admin/logout" class="logout-button"><i class="fa fa-mail-reply-all"></i>&nbsp Logout</a></li>';
-            }
+            $items .= '<li><a href="/admin/logout" class="logout-button"><i class="fa fa-power-off"></i>&nbsp;&nbsp; Logout</a></li>';
 
 
             return $items;

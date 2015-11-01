@@ -32,16 +32,20 @@ class Page implements \IPlugin
     }
 
     public function Index(...$params){
+        return 'PageIndex';
+    }
+
+    public function AdminIndex(...$params){
         return $this->view->AdminList();
     }
 
-    public function Add()
+    public function AdminAdd()
     {
 
-        return $this->Edit(0);
+        return $this->AdminEdit(0);
     }
 
-    public function Edit(\int $id)
+    public function AdminEdit(\int $id)
     {
         if($this->view->UserSubmitted()){
             $this->model->Save($this->view->GetUpdatedPage($id));
@@ -50,7 +54,7 @@ class Page implements \IPlugin
         return $this->view->Edit($id);
     }
 
-    public function Delete($id)
+    public function AdminDelete($id)
     {
         $this->model->Delete($id);
         $this->view->GoToIndex();

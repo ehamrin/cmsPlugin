@@ -29,15 +29,20 @@ class Authentication implements \IPlugin
 
     public function Index(...$params)
     {
+        return 'Authentication Index';
+    }
+
+    public function AdminIndex(...$params)
+    {
         return $this->view->AdminList();
     }
 
-    public function Add()
+    public function AdminAdd()
     {
-        return $this->Edit(0);
+        return $this->AdminEdit(0);
     }
 
-    public function Edit(\int $id)
+    public function AdminEdit(\int $id)
     {
         $this->view->SetUser($id);
         if($this->view->UserSubmitted()){
@@ -48,7 +53,7 @@ class Authentication implements \IPlugin
         return $this->view->Edit();
     }
 
-    public function View($id)
+    public function AdminView($id)
     {
         if(is_string($id) && $id != ""){
             $this->model->FindByID($id);
@@ -56,7 +61,7 @@ class Authentication implements \IPlugin
         return "User view";
     }
 
-    public function Delete($id)
+    public function AdminDelete($id)
     {
         $this->model->Delete($id);
         $this->view->GoToIndex();
@@ -66,7 +71,7 @@ class Authentication implements \IPlugin
         return $this->model->IsLoggedIn();
     }
 
-    public function Login(){
+    public function AdminLogin(){
         $login = $this->view->UserLoggedIn();
         if($login == false || !$this->model->Login($login)) {
             return $this->view->ShowLogin();

@@ -24,10 +24,14 @@ class PluginHandler implements \IPlugin
     }
 
     function Init($method="Index", ...$params){
-        return $this->Index(...$params);
+        return $this->$method(...$params);
     }
 
     public function Index(...$params){
+        return 'PluginHandler Index';
+    }
+
+    public function AdminIndex(...$params){
         if($this->view->WasSubmitted()){
             try{
                 $this->model->Save($this->view->GetData());

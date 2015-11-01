@@ -42,6 +42,11 @@ class Slider implements \IPlugin
 
     public function Index(...$params)
     {
+        return 'Slider admin Index';
+    }
+
+    public function AdminIndex(...$params)
+    {
         return 'Slider Index';
     }
 

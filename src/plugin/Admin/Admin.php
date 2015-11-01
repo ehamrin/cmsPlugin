@@ -26,7 +26,7 @@ class Admin implements \IPlugin
         }
 
         if(!$this->application->IsAuthenticated()){
-            $login= $this->application->GetPlugin('Authentication')->Init('Login');
+            $login= $this->application->GetPlugin('Authentication')->Init('AdminLogin');
             if($login !== true){
                 return $this->view->Render($login);
             }
@@ -41,8 +41,11 @@ class Admin implements \IPlugin
             foreach($listeners as $event){
                 /* @var $event \Event */
                 foreach($event->GetData() as $navitem){
+                    /* @var $navitem \NavigationItem */
                     if($method == $navitem->GetLink()){
-                        return $this->view->Render($event->GetHookListener()->Init(...$params));
+                        $method = array_shift($params);
+                        $method = 'Admin' . (empty($method) ? 'Index' : $method);
+                        return $this->view->Render($event->GetHookListener()->Init($method, ...$params));
                     }
                 }
 
