@@ -1,13 +1,13 @@
 <?php
-/*
- * Name: Admin panel
- * Description: Allow managing of the content on the site
- * Author: Erik Hamrin
- * Version: v0.5
- */
 
 namespace plugin\Admin;
 
+/**
+ * @Name Admin panel
+ * @Description Allow managing of the content on the site
+ * @Author Erik Hamrin
+ * @Version v0.5
+ */
 
 class Admin implements \IPlugin
 {

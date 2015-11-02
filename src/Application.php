@@ -156,8 +156,10 @@ class Application
     }
 
     public function CreatePluginFacade($plugin){
-        $pluginFile =  self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php';
-        $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
-        return new PluginFacade($pluginClassName, $pluginFile);
+        if(is_file(self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php')){
+            $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
+            return new PluginFacade($pluginClassName);
+        }
+        throw new Exception("The plugin file does not exist!");
     }
 }

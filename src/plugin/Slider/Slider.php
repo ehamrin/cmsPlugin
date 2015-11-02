@@ -1,14 +1,13 @@
 <?php
-/*
- * Name: Image slider
- * Description: Add slides to your pages
- * Author: Erik Hamrin
- * Icon:  fa-image
- */
-
 
 namespace plugin\Slider;
 
+/**
+ * @Name Image slider
+ * @Description Add slides to your pages
+ * @Author Erik Hamrin
+ * @Icon  fa-image
+ */
 
 class Slider implements \IPlugin
 {

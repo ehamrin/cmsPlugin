@@ -20,10 +20,7 @@ class PluginFacade
      * @param string $filePath
      * @throws PluginNotValidException
      */
-    public function __construct($className, $filePath){
-        if(!is_file($filePath)){
-            throw new PluginNotValidException("Could not find the plugin file {$filePath}");
-        }
+    public function __construct($className){
 
         $this->reflect = new ReflectionClass($className);
 
@@ -31,11 +28,15 @@ class PluginFacade
             throw new PluginNotValidException("The plugin does not implement the IPlugin Interface");
         }
 
-        $this->meta = $this->GenerateMeta($filePath);
+        $this->meta = $this->GenerateMeta();
     }
 
     public function AddInstance(\Application $application){
         $this->instance = $this->reflect->newInstance($application);
+
+        if($this->instance->IsInstalled() == false){
+            $this->instance->Install();
+        }
     }
 
     public function RemoveInstance(){
@@ -69,8 +70,7 @@ class PluginFacade
         return $this->instance !== null;
     }
 
-    private function GenerateMeta($filePath){
-        $inComment = false;
+    private function GenerateMeta(){
         $obj = new stdClass();
 
         $lookFor = array(
@@ -85,30 +85,20 @@ class PluginFacade
             $obj->$name = '';
         }
 
-        if(file_exists($filePath)){
+        if($comment = $this->reflect->getDocComment()){
+            $comment = str_replace(array('/**', '*/'), '', $comment);
+            $lines = explode('*', $comment);
 
-            foreach(file($filePath) as $line){
-                if(strpos($line, '/*') !== false){
-                    $inComment = true;
-                }
-                if($inComment){
-                    //Remove asterisks
-                    $line = str_replace(array('/* ', '* '), '', $line);
-
-                    foreach($lookFor as $name){
-                        if(strpos($line, $name . ':') !== false){
-                            $line = str_replace($name . ':', '', $line);
-                            $obj->{$name} = trim($line);
-                        }
-                    }
-
-                    if(strpos($line, '*/') !== false){
-                        $inComment = false;
+            foreach($lines as $line){
+                foreach($lookFor as $name){
+                    if(strpos('@' . $line, $name) !== false){
+                        $line = str_replace('@' . $name, '', $line);
+                        $obj->{$name} = trim($line);
                     }
                 }
-
             }
         }
+
         return $obj;
     }
 }

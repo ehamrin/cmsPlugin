@@ -1,14 +1,14 @@
 <?php
-/*
- * Name: Plugin Manager
- * Description: Choose what plugins will be active
- * Author: Erik Hamrin
- * Version: v0.5
- * Icon: fa-puzzle-piece
- */
 
 namespace plugin\PluginHandler;
 
+/**
+ * @Name Plugin Manager
+ * @Description Choose what plugins will be active
+ * @Author Erik Hamrin
+ * @Version v0.5
+ * @Icon fa-puzzle-piece
+ */
 
 class PluginHandler implements \IPlugin
 {

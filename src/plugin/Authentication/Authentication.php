@@ -1,14 +1,14 @@
 <?php
-/*
- * Name: User Authentication
- * Description: Limit access to your admin panel by managing users
- * Author: Erik Hamrin
- * Version: v0.5
- * Icon: fa-users
- */
 
 namespace plugin\Authentication;
 
+/**
+ * @Name User Authentication
+ * @Description Limit access to your admin panel by managing users
+ * @Author Erik Hamrin
+ * @Version v0.5
+ * @Icon fa-users
+ */
 
 class Authentication implements \IPlugin
 {

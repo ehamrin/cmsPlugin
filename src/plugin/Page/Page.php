@@ -1,13 +1,13 @@
 <?php
-/*
- * Name: Pages
- * Description: Add pages to you site
- * Author: Erik Hamrin
- * Version: v0.6
- * Icon:  fa-file-o
- */
-
 namespace plugin\Page;
+
+/**
+ * @Name Pages
+ * @Description Add pages to you site
+ * @Author Erik Hamrin
+ * @Version v0.6
+ * @Icon  fa-file-o
+ */
 
 
 class Page implements \IPlugin
