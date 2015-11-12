@@ -10,13 +10,14 @@ namespace plugin\Authentication;
  * @Icon fa-users
  */
 
-class Authentication implements \IPlugin
+class Authentication implements \IPlugin, \plugin\Admin\IAdminPanel
 {
     private $model;
     public function __construct(\Application $application){
         $this->application = $application;
         $this->model = new model\UserModel();
         $this->view = new view\User($application, $this->model);
+        $this->adminController = new controller\AdminAuthenticationController($this->application, $this->model, $this->view);
     }
 
     function Init($method = "Index", ...$params)
@@ -27,51 +28,24 @@ class Authentication implements \IPlugin
         return false;
     }
 
+    public function AdminPanelInit($method = "Index", ...$params)
+    {
+        if(method_exists($this->adminController, $method)) {
+            return $this->adminController->{$method}(...$params);
+        }
+        return false;
+    }
+
     public function Index(...$params)
     {
         return 'Authentication Index';
-    }
-
-    public function AdminIndex(...$params)
-    {
-        return $this->view->AdminList();
-    }
-
-    public function AdminAdd()
-    {
-        return $this->AdminEdit(0);
-    }
-
-    public function AdminEdit(\int $id)
-    {
-        $this->view->SetUser($id);
-        if($this->view->UserSubmitted()){
-            $id = $this->model->Save($this->view->GetUpdatedUser());
-            $this->view->SetUser($id);
-            $this->view->EditSuccess();
-        }
-        return $this->view->Edit();
-    }
-
-    public function AdminView($id)
-    {
-        if(is_string($id) && $id != ""){
-            $this->model->FindByID($id);
-        }
-        return "User view";
-    }
-
-    public function AdminDelete($id)
-    {
-        $this->model->Delete($id);
-        $this->view->GoToIndex();
     }
 
     public function IsLoggedIn(){
         return $this->model->IsLoggedIn();
     }
 
-    public function AdminLogin(){
+    public function Login(){
         $login = $this->view->UserLoggedIn();
         if($login == false || !$this->model->Login($login)) {
             return $this->view->ShowLogin();
@@ -104,12 +78,12 @@ class Authentication implements \IPlugin
 
     public function HookAdminItems(){
         return array(
-            new \NavigationItem('Users', 'user', array(new \NavigationItem('Add user', 'user/add', array(), 'manage-user')), 'manage-user')
+            new \NavigationItem('Users', 'user', array(new \NavigationItem('Add user', 'user/add', array(), 'manage-user')), 'manage-users',  'fa-users')
         );
     }
 
     public function HookAdminPanel(){
-        if($this->application->GetUser()->Can('manage-user')){
+        if($this->application->GetUser()->Can('manage-users')){
             $users  = count($this->model->FetchAll());
             return <<<HTML
     <h1>Users</h1>

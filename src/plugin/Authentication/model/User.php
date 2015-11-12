@@ -40,6 +40,10 @@ class User
         $this->permissions[$permission] = $permission;
     }
 
+    public function GetPermissions(){
+        return $this->permissions;
+    }
+
     public function Can($permission = ''){
         return isset($this->permissions[$permission]) || $this->id == 1 || $permission == '';
     }

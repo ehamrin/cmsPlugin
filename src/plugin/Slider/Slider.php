@@ -9,7 +9,7 @@ namespace plugin\Slider;
  * @Icon  fa-image
  */
 
-class Slider implements \IPlugin
+class Slider implements \IPlugin, \plugin\admin\IAdminPanel
 {
     public function __construct(\Application $application){
         $this->application = $application;
@@ -19,6 +19,16 @@ class Slider implements \IPlugin
 
     function Init($method="Index", ...$params){
         return $this->Index();
+    }
+
+    public function AdminPanelInit($method = "Index", ...$params)
+    {
+        $method = 'Admin'.$method;
+
+        if(method_exists($this, $method)) {
+            return $this->{$method}(...$params);
+        }
+        return false;
     }
 
     public function Install(){
@@ -41,12 +51,12 @@ class Slider implements \IPlugin
 
     public function Index(...$params)
     {
-        return 'Slider admin Index';
+        return 'Slider Index';
     }
 
     public function AdminIndex(...$params)
     {
-        return 'Slider Index';
+        return 'Slider admin Index';
     }
 
     /*
@@ -65,12 +75,17 @@ class Slider implements \IPlugin
                 'Slider',
                 'slider',
                 array(),
-                'manage-slider'
+                'manage-slider',
+                'fa-image'
             )
         );
     }
 
     public function HookUserPermissions(){
         return array(new \plugin\Authentication\model\Permission('Manage slider', 'manage-slider'));
+    }
+
+    public function HookPluginSettings(){
+        return array(new \plugin\Settings\model\Setting('slider-duration', '5', 'Seconds to display each slide'));
     }
 }

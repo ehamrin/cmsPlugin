@@ -5,82 +5,13 @@ namespace plugin\Authentication\view;
 
 use \plugin\Authentication\model;
 
-class User
+class User extends \plugin\AbstractView
 {
-    private $userToEdit = 0;
+
+    protected $message = null;
     public function __construct(\Application $application, model\UserModel $model){
         $this->application = $application;
         $this->model = $model;
-        $this->editForm = $this->CreateEditForm();
-        $this->newForm = $this->CreateNewForm();
-    }
-
-    private function CreateEditForm(){
-        $form = new \Form\controller\FormController("EditUser");
-
-        $permissions = array();
-        $ownPermission = array(new model\Permission('Manage users', 'manage-users'), new model\Permission('Manage permissions', 'manage-permissions'));
-        foreach ($this->application->InvokeEvent("UserPermissions") as $event) {
-            /* @var $event \Event */
-
-            foreach ($event->GetData() as $permission) {
-                /* @var $permission model\Permission */
-                $permissions[] = (new \Form\model\input\Checkbox("permission[" . $permission->GetPermission() . "]"))
-                    ->SetLabel($permission->GetName());
-            }
-        }
-
-        foreach ($ownPermission as $permission) {
-            $permissions[] = (new \Form\model\input\Checkbox("permission[" . $permission->GetPermission() . "]"))
-                ->SetLabel($permission->GetName());
-        }
-
-        $form->AddInput(
-            (new \Form\model\input\Text("username"))
-                ->SetLabel("Username")
-                ->SetValidation(new \Form\model\validation\Required("You must enter a password")),
-            ...$permissions
-        );
-        $form->AddInput((new \Form\model\input\Submit("submit", "Submit")));
-        return $form;
-    }
-
-    private function CreateNewForm(){
-        $form = new \Form\controller\FormController("EditUser");
-
-        $permissions = array();
-        $ownPermission = array(new model\Permission('Manage users', 'manage-users'), new model\Permission('Manage permissions', 'manage-permissions'));
-        foreach ($this->application->InvokeEvent("UserPermissions") as $event) {
-            /* @var $event \Event */
-
-            foreach ($event->GetData() as $permission) {
-                /* @var $permission model\Permission */
-                $permissions[] = (new \Form\model\input\Checkbox("permission[" . $permission->GetPermission() . "]"))
-                    ->SetLabel($permission->GetName());
-            }
-        }
-
-        foreach ($ownPermission as $permission) {
-            $permissions[] = (new \Form\model\input\Checkbox("permission[" . $permission->GetPermission() . "]"))
-                ->SetLabel($permission->GetName());
-        }
-
-        $form->AddInput(
-            (new \Form\model\input\Text("username"))
-                ->SetLabel("Username")
-                ->SetValidation(new \Form\model\validation\Required("You must enter a password")),
-            (new \Form\model\input\Password("password"))
-                ->SetLabel("Password")
-                ->SetValidation(new \Form\model\validation\Required("You must enter a password"))
-                ->SetComparator(new \Form\model\comparator\EqualTo("passwordRepeat", "The passwords must match")),
-            (new \Form\model\input\Password("passwordRepeat"))
-                ->SetLabel("Repeat Password")
-                ->SetComparator(new \Form\model\comparator\EqualTo("password", "The passwords must match"))
-                ->SetValidation(new \Form\model\validation\Required("You must enter a password")),
-            ...$permissions
-        );
-        $form->AddInput((new \Form\model\input\Submit("submit", "Submit")));
-        return $form;
     }
 
     public function AdminList(){
@@ -107,52 +38,88 @@ class User
 HTML;
     }
 
-    public function Edit(){
+    public function Edit($id){
+        $user = $this->model->FindByID($id);
 
-        if($this->userToEdit > 0){
-            $user = $this->model->FindByID($this->userToEdit);
-            /* @var $user \plugin\Authentication\model\User */
-            $this->editForm->UpdateValue("username", $user->GetUsername());
-            return $this->editForm->GetView();
+        $permissions = array(new model\Permission('Manage users', 'manage-users'), new model\Permission('Manage permissions', 'manage-permissions'));
+
+        foreach ($this->application->InvokeEvent("UserPermissions") as $event) {
+            /* @var $event \Event */
+
+            foreach ($event->GetData() as $permission) {
+                /* @var $permission model\Permission */
+                $permissions[] = $permission;
+            }
         }
-
-        return $this->newForm->GetView();
+        return $this->View('Edit', array('permissions' => $permissions, 'user' => $user));
     }
 
-    public function UserSubmitted(){
-        $submitted = $this->editForm->WasSubmitted() || $this->editForm->WasSubmitted();
-        if($submitted){/*
-            if($this->model->UserExists($this->GetUpdatedUser())){
-                $this->editForm->InjectFormError("The user already exists!");
-                return false;
-            }*/
-            return true;
+    public function Add(){
+
+        $permissions = array(new model\Permission('Manage users', 'manage-users'), new model\Permission('Manage permissions', 'manage-permissions'));
+
+        foreach ($this->application->InvokeEvent("UserPermissions") as $event) {
+            /* @var $event \Event */
+
+            foreach ($event->GetData() as $permission) {
+                /* @var $permission model\Permission */
+                $permissions[] = $permission;
+            }
         }
-        return false;
+        return $this->View('Add', array('permissions' => $permissions));
     }
 
-    public function SetUser($userID){
-        $this->userToEdit = $userID;
+    public function UserSubmittedEditForm(){
+        return isset($_POST['edit_submit']);
     }
 
-    public function GetUpdatedUser(){
-        if($this->userToEdit > 0) {
-            $data = $this->editForm->GetData();
-            $user = new model\User($data['username'], '', $this->userToEdit);
-        }else{
-            $data = $this->newForm->GetData();
-            $user = new model\User($data['username'], '', $this->userToEdit);
-            $user->SetPassword($data['password']);
-        }
+
+    public function UserSubmittedAddForm(){
+        return isset($_POST['add_submit']);
+    }
+
+    public function UserSubmittedEditPassword(){
+        return isset($_POST['edit_password']) && $_POST['new'] == $_POST['new_repeat'];
+    }
+
+    public function GetUpdatedPassword($id){
+        $user = new model\User('', $_POST['new'], $id);
+        $user->SetPassword($_POST['new']);
         return $user;
     }
 
-    public function EditSuccess(){
-        if($this->userToEdit > 0){
-            $this->editForm->InjectFormSuccess('<a class="confirmed-add" href="/admin/user">You edited a user!</a>');
-        }else{
-            $this->editForm->InjectFormSuccess('<a class="confirmed-add" href="/admin/user">You added a user!</a>');
+    public function GetNewUser(){
+        $user = new model\User($_POST['username'], $_POST['password'], 0);
+        if(isset($_POST['permission'])){
+            foreach($_POST['permission'] as $permission){
+                $user->AddPermission($permission);
+            }
         }
+
+        return $user;
+    }
+
+    public function GetUpdatedUser($id){
+        $user = new model\User($_POST['username'], '', $id);
+        if(isset($_POST['permission'])){
+            foreach($_POST['permission'] as $permission){
+                $user->AddPermission($permission);
+            }
+        }
+
+        return $user;
+    }
+
+    public function PasswordSuccess(){
+        $this->message = '<a class="confirmed-add" href="/admin/user">You edited a users password!</a>';
+    }
+
+    public function EditSuccess(){
+        $this->message = '<a class="confirmed-add" href="/admin/user">You edited a user!</a>';
+    }
+
+    public function AddSuccess(){
+        $this->message = '<a class="confirmed-add" href="/admin/user">You added a new user!</a>';
     }
 
 

@@ -16,41 +16,37 @@ class Admin
     }
 
     private function GetNavItems(){
-
-
-
         if($this->application->IsAuthenticated()){
-            $items = "";
-            $items .= '<li><a href="/admin/"><i class="fa fa-home"></i>&nbsp Admin panel</a></li>';
+            $items = array();
+
             foreach ($this->application->InvokeEvent("AdminItems") as $event) {
                 /* @var $event \Event */
                 foreach ($event->GetData() as $navitem) {
                     /* @var $navitem \NavigationItem */
                     if($this->application->GetUser()->Can($navitem->GetPermission())){
-                        $className = get_class($event->GetHookListener());
-                        $className = explode('\\', $className);
-                        $className = array_pop($className);
-                        $meta = $this->application->GetPluginMeta($className);
-
-                        $items .= '<li>
-                                <a href="/admin/' . $navitem->GetLink() . '">' . (!empty($meta->Icon) ? '<i class="fa ' . $meta->Icon . '"></i>&nbsp ' : '') . $navitem->GetTitle() . '</a>';
-                        if($navitem->HasSubs()){
-                            $items .= '<ul>';
-                            foreach($navitem->GetSubs() as $sub){
-                                $items .= '<li><a href="/admin/' . $sub->GetLink() . '">' . $sub->GetTitle() . '</a></li>';
-                            }
-                            $items .= '</ul>';
-                        }
-                        $items .= '</li>';
+                        $items[] = $navitem;
                     }
-
-
                 }
             }
-            $items .= '<li><a href="/admin/logout" class="logout-button"><i class="fa fa-power-off"></i>&nbsp;&nbsp; Logout</a></li>';
 
+            $html = '<li><a href="/admin/"><i class="fa fa-home"></i>&nbsp Admin panel</a></li>';
 
-            return $items;
+            foreach($items as $navitem){
+                $html .= '<li>
+                                <a href="/admin/' . $navitem->GetLink() . '">' . (!empty($navitem->GetIcon()) ? '<i class="fa ' . $navitem->GetIcon() . '"></i>&nbsp ' : '') . $navitem->GetTitle() . '</a>';
+                if($navitem->HasSubs()){
+                    $html .= '<ul>';
+                    foreach($navitem->GetSubs() as $sub){
+                        $html .= '<li><a href="/admin/' . $sub->GetLink() . '">' . $sub->GetTitle() . '</a></li>';
+                    }
+                    $html .= '</ul>';
+                }
+                $html .= '</li>';
+            }
+
+            $html .= '<li><a href="/admin/logout" class="logout-button"><i class="fa fa-power-off"></i>&nbsp;&nbsp; Logout</a></li>';
+
+            return $html;
         }
         return null;
     }
@@ -62,7 +58,7 @@ class Admin
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Administration</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/normalize.css">

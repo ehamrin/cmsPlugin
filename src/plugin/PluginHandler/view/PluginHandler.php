@@ -15,7 +15,7 @@ class PluginHandler
         $ret = '<form action="" method="POST"><table><tr><th>Plugin Name</th><th>Active</th><th>Description</th><th>Version</th></tr>';
         $installed = $this->model->InstalledPlugins();
 
-        foreach($this->model->GetAvailablePlugins() as $available){
+        foreach($this->model->GetAvailablePlugins() as $available => $facade){
             $data = $application->GetPluginMeta($available);
 
             $ret .= '<tr><td>' . (!empty($data->Name) ? $data->Name : $available) . '</td>';

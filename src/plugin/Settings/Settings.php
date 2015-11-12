@@ -1,19 +1,20 @@
 <?php
-/*
- * Name: Site settings
- * Description: Manage settings
- * Author: Erik Hamrin
- * Version: v0.6
- * Icon:  fa-cogs
- */
 
 namespace plugin\Settings;
 
+/**
+ * @Name Site settings
+ * @Description Manage settings
+ * @Author Erik Hamrin
+ * @Version v0.6
+ * @Icon  fa-cogs
+ */
 
-class Settings implements \IPlugin
+class Settings implements \IPlugin, \plugin\admin\IAdminPanel
 {
 
     private $application;
+    private $pluginSettings = null;
 
     public function __construct(\Application $application){
         $this->application = $application;
@@ -31,13 +32,24 @@ class Settings implements \IPlugin
         return "Settings index";
     }
 
+    public function AdminPanelInit($method = "Index", ...$params)
+    {
+        $method = 'Admin'.$method;
+
+        if(method_exists($this, $method)) {
+            return $this->{$method}(...$params);
+        }
+        return false;
+    }
+
     public function AdminIndex(...$params)
     {
         if($this->view->WasSubmitted()){
             $this->model->Save(...$this->view->GetSettings());
             $this->view->EditSuccess();
         }
-        return $this->view->ViewSettings();
+
+        return $this->view->ViewSettings($this->GetPluginSettings());
     }
 
 
@@ -54,7 +66,9 @@ class Settings implements \IPlugin
         return true;
     }
 
-
+    private function GetPluginSettings(){
+        return $this->pluginSettings ?? $this->pluginSettings = $this->application->InvokeEvent('PluginSettings');
+    }
 
     /*
      * ------------------------------------------------------
@@ -63,12 +77,14 @@ class Settings implements \IPlugin
      */
 
     public function HookAdminItems(){
+
         return array(
             new \NavigationItem(
                 'Settings',
                 'setting',
                 array(),
-                'manage-setting'
+                'manage-setting',
+                'fa-cogs'
             )
         );
     }

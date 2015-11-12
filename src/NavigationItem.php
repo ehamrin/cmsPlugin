@@ -6,12 +6,14 @@ class NavigationItem
     private $title;
     private $link;
     private $subs;
+    private $icon;
 
-    public function __construct($title, $link, $subs = array(), \string $permission = ''){
+    public function __construct($title, $link, $subs = array(), \string $permission = '', $icon = ''){
         $this->title = $title;
         $this->link = $link;
         $this->subs = $subs;
         $this->permission = $permission;
+        $this->icon = $icon;
     }
 
     public function GetTitle(){
@@ -28,6 +30,10 @@ class NavigationItem
 
     public function GetPermission(){
         return $this->permission;
+    }
+
+    public function GetIcon(){
+        return $this->icon;
     }
 
     public function HasPermission(){

@@ -25,7 +25,7 @@ class UserModel
             throw new \Exception("User not found");
         }
         $obj = $stmt->fetchObject();
-        return new User($obj->username, $obj->password);
+        return $this->LoadFromObject($obj);
     }
 
     /**
@@ -41,7 +41,20 @@ class UserModel
             throw new \Exception("User not found");
         }
         $obj = $stmt->fetchObject();
-        return new User($obj->username, $obj->password, $obj->id);
+
+        return $this->LoadFromObject($obj);
+    }
+
+    private function LoadFromObject($obj){
+        $user = new User($obj->username, $obj->password, $obj->id);
+
+        $stmt = $this->conn->prepare("SELECT * FROM user_permission WHERE user = ?");
+        $stmt->execute(array($obj->id));
+        while($obj = $stmt->fetchObject()){
+            $user->AddPermission($obj->permission);
+        }
+
+        return $user;
     }
 
     /**
@@ -54,28 +67,37 @@ class UserModel
         $stmt->execute();
 
         while($obj = $stmt->fetchObject()){
-            $ret[] = new User($obj->username, $obj->password, $obj->id);
+            $ret[] = $this->LoadFromObject($obj);
         }
         return $ret;
     }
 
-    public function Save(User $user){
-        if($user->GetID() > 0){
-            return $this->Update($user);
-        }
-        return $this->Create($user);
-    }
-
-    private function Create(User $user){
+    public function Create(User $user){
         $stmt = $this->conn->prepare("INSERT INTO user (username, password) VALUES(?,?)");
         $stmt->execute(array($user->GetUsername(), $user->GetPassword()));
         return $this->conn->lastInsertId();
     }
 
-    private function Update(User $user){
-        $stmt = $this->conn->prepare("UPDATE user SET username=?, password=? WHERE id = ?");
-        $stmt->execute(array($user->GetUsername(), $user->GetPassword(), $user->GetID()));
-        return $user->GetID();
+    public function Update(User $user){
+        $stmt = $this->conn->prepare("UPDATE user SET username=? WHERE id = ?");
+        $stmt->execute(array($user->GetUsername(), $user->GetID()));
+
+        $stmt = $this->conn->prepare("DELETE FROM user_permission WHERE user = ?");
+        $stmt->execute(array($user->GetID()));
+
+        foreach($user->GetPermissions() as $permission){
+            $stmt = $this->conn->prepare("INSERT INTO user_permission (user, permission) VALUES(?,?)");
+            $stmt->execute(array($user->GetID(), $permission));
+        }
+
+        if($this->GetLoggedInUser()->GetID() == $user->GetID()){
+            $_SESSION["admin"] = $this->FindByID($user->GetID());
+        }
+    }
+
+    public function UpdatePassword(User $user){
+        $stmt = $this->conn->prepare("UPDATE user SET password=? WHERE id = ?");
+        $stmt->execute(array($user->GetPassword(), $user->GetID()));
     }
 
     public function Delete($id){
@@ -116,6 +138,13 @@ class UserModel
      * @return bool
      */
     public function IsLoggedIn(){
+        return isset($_SESSION["admin"]);
+    }
+
+    /**
+     * @return bool
+     */
+    public static function IsAuthenticated(){
         return isset($_SESSION["admin"]);
     }
 

@@ -10,66 +10,43 @@ namespace plugin\Page;
  */
 
 
-class Page implements \IPlugin
+class Page implements \IPlugin, \plugin\Admin\IAdminPanel
 {
     private $model;
     private $view;
+    private $adminController;
+    private $publicController;
 
     public function __construct(\Application $application){
         $this->application = $application;
         $this->model = new model\PageModel();
         $this->view = new view\Page($this->application, $this->model);
+
+        $this->adminController = new controller\AdminPageController($this->application, $this->model, $this->view);
+        $this->publicController = new controller\PublicPageController($this->application, $this->model, $this->view);
     }
 
     function Init($method="Index", ...$params){
-
         if(!method_exists($this, $method) && $this->HookRootAccess($method)){
-            return $this->ViewCMS(strtolower($method));
-        }elseif(method_exists($this, $method)){
-            return $this->{$method}(...$params);
+            return $this->publicController->ViewCMS(strtolower($method));
+        }elseif(method_exists($this->publicController, $method)){
+            return $this->publicController->{$method}(...$params);
         }
+        return false;
+    }
+
+    public function AdminPanelInit($method = "Index", ...$params)
+    {
+        if(method_exists($this->adminController, $method)) {
+            return $this->adminController->{$method}(...$params);
+        }
+
         return false;
     }
 
     public function Index(...$params){
         return 'PageIndex';
     }
-
-    public function AdminIndex(...$params){
-        return $this->view->AdminList();
-    }
-
-    public function AdminAdd()
-    {
-
-        return $this->AdminEdit(0);
-    }
-
-    public function AdminEdit(\int $id)
-    {
-        if($this->view->UserSubmitted()){
-            $this->model->Save($this->view->GetUpdatedPage($id));
-            $this->view->EditSuccess($id);
-        }
-        return $this->view->Edit($id);
-    }
-
-    public function AdminDelete($id)
-    {
-        $this->model->Delete($id);
-        $this->view->GoToIndex();
-    }
-
-    public function ViewCMS($id = "")
-    {
-        try{
-            $page = $this->model->FindByURL($id);
-            return $this->view->RenderCMS($page);
-        }catch(\Exception $e){
-            return false;
-        }
-    }
-
 
     public function Install(){
         $this->model->Install();
@@ -101,7 +78,8 @@ class Page implements \IPlugin
                 array(
                     new \NavigationItem('Add page', 'page/add', array(), 'manage-pages')
                 ),
-                'manage-pages'
+                'manage-pages',
+                'fa-file-o'
             )
         );
     }
@@ -120,4 +98,10 @@ HTML;
     public function HookUserPermissions(){
         return array(new \plugin\Authentication\model\Permission('Manage pages', 'manage-pages'));
     }
+
+    public function HookPluginSettings(){
+        return array(new \plugin\Settings\model\Setting('page-site-title', 'My site', 'The name of your website'));
+    }
+
+
 }

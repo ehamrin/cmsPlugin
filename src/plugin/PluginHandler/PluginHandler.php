@@ -10,7 +10,7 @@ namespace plugin\PluginHandler;
  * @Icon fa-puzzle-piece
  */
 
-class PluginHandler implements \IPlugin
+class PluginHandler implements \IPlugin, \plugin\admin\IAdminPanel
 {
     private $model;
     private $view;
@@ -29,6 +29,16 @@ class PluginHandler implements \IPlugin
 
     public function Index(...$params){
         return 'PluginHandler Index';
+    }
+
+    public function AdminPanelInit($method = "Index", ...$params)
+    {
+        $method = 'Admin'.$method;
+
+        if(method_exists($this, $method)) {
+            return $this->{$method}(...$params);
+        }
+        return false;
     }
 
     public function AdminIndex(...$params){
@@ -75,6 +85,6 @@ class PluginHandler implements \IPlugin
     }
 
     public function HookAdminItems(){
-        return array(new \NavigationItem('Manage Plugins', 'plugin', array(), 'manage-plugin'));
+        return array(new \NavigationItem('Manage Plugins', 'plugin', array(), 'manage-plugin', 'fa-puzzle-piece'));
     }
 }

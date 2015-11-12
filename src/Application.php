@@ -18,20 +18,31 @@ class Application
         $action = ucwords(array_shift($url));
 
         $this->BindPlugins();
+
+
         $content = false;
 
-        foreach($this->plugins as $name => $plugin) {
-            $event = 'HookRootAccess';
+        try{
+            $this->InvokeEvent('NewVisitor');
 
-            if($plugin->Exists() && $plugin->GetReflection()->hasMethod($event)) {
-                $reflectMethod = $plugin->GetReflection()->getMethod($event);
+            foreach($this->plugins as $name => $plugin) {
+                $event = 'HookRootAccess';
 
-                //Create a new instance of the class
-                $instance = $this->GetPlugin($name);
-                if ($reflectMethod->invoke($instance, $action)) {
-                    $content = $instance->Init($action, ...$url);
+                if($plugin->Exists() && $plugin->GetReflection()->hasMethod($event)) {
+                    $reflectMethod = $plugin->GetReflection()->getMethod($event);
+
+                    //Create a new instance of the class
+                    $instance = $this->GetPlugin($name);
+                    if ($reflectMethod->invoke($instance, $action)) {
+                        $content = $instance->Init($action, ...$url);
+                    }
                 }
             }
+
+        }catch (\PDOException $e){
+            $this->InvokeEvent('UncaughtDBError', $e);
+        }catch (\Exception $e){
+            $this->InvokeEvent('UncaughtError', $e);
         }
 
         if($content != false){
@@ -40,6 +51,7 @@ class Application
             header("HTTP/1.0 404 Not Found");
             echo file_get_contents(APP_ROOT . 'error.html');
         }
+
 
     }
 
@@ -51,11 +63,10 @@ class Application
         array_shift($plugins);
 
         foreach($plugins as $plugin) {
-
             try{
-                $this->plugins[$plugin] = $this->CreatePluginFacade($plugin);
-
-            }catch(PluginNotValidException $e){
+                $pluginFacade = $this->CreatePluginFacade($plugin);
+                $this->plugins[$plugin] = $pluginFacade;
+            }catch(\Exception $e){
                 //It's not a valid plugin
                 // TODO Show exception message
             }
@@ -63,7 +74,7 @@ class Application
 
         //Check if a plugin wants to control what other plugins are activated
 
-        $activePlugins = $this->InvokeEvent('ActivatedPlugins', $plugins);
+        $activePlugins = $this->InvokeEvent('ActivatedPlugins', $this->plugins);
 
         if(count($activePlugins) === 1){
             foreach($this->plugins as $name => $plugin) {
@@ -78,7 +89,7 @@ class Application
     }
 
     public function GetConstantPlugins(){
-        return array('Admin', 'Authentication', 'PluginHandler', 'Settings');
+        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger');
     }
 
     /**
@@ -97,7 +108,7 @@ class Application
 
                 $list = $reflectMethod->invoke($instance,...$args);
 
-                $return = array_merge($return, array(new Event($instance, $list)));
+                $return = array_merge($return, array($name => new Event($instance, $list)));
             }
         }
         return $return;

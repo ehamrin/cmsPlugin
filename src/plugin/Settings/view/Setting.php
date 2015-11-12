@@ -2,49 +2,51 @@
 
 
 namespace plugin\Settings\view;
+use plugin\AbstractView;
 use \plugin\Settings\model;
 
-class Setting
+class Setting extends AbstractView
 {
     private $form;
     private $model;
     private $application;
+    private $message = null;
 
     public function __construct(\Application $application, model\SettingModel $model){
         $this->application = $application;
         $this->model = $model;
-        $this->form = $this->GenerateForm();
     }
 
-    private function GenerateForm(){
-        $form = new \Form\controller\FormController("SettingsForm");
-        foreach($this->model->GetAll() as $setting){
-            $form->AddInput(
-                (new \Form\model\input\Text($setting->GetName(), $setting->GetValue()))
-                    ->SetLabel($setting->GetDescription())
-            );
+    public function ViewSettings($plugins){
+        $html = '';
+
+        foreach($plugins as $plugin => $event){
+            $html .= $this->View('SettingInput', array(
+                'plugin' => $plugin,
+                'settings' => $event->getData(),
+                'model' => $this->model
+            ));
         }
-        $form->AddInput(new \Form\model\input\Submit("Send", "Submit changes"));
-        return $form;
-    }
 
-    public function ViewSettings(){
-        return $this->form->GetView();
+        return $this->View('SettingForm', array(
+            'message' => $this->message,
+            'html' => $html
+        ));
     }
 
     public function WasSubmitted(){
-        return $this->form->WasSubmitted();
+        return isset($_POST['submit']);
     }
 
     public function GetSettings(){
         $ret = array();
-        foreach($this->form->GetData() as $key => $value){
+        foreach($_POST['settings'] as $key => $value){
             $ret[] = new model\Setting($key, $value);
         }
         return $ret;
     }
 
     public function EditSuccess(){
-        $this->form->InjectFormSuccess('<a class="confirmed-add" href="/admin/setting">You successfully saved the settings!</a>');
+        $this->message = '<a class="confirmed-add" href="/admin/setting">You successfully saved the settings!</a>';
     }
 }

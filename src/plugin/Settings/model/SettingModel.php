@@ -19,7 +19,7 @@ class SettingModel
         $stmt->execute(array($name));
 
         if(!$stmt->rowCount()){
-            throw new \Exception("Setting not found");
+            return false;
         }
         $obj = $stmt->fetchObject();
         return new Setting($obj->name, $obj->value, $obj->description);
