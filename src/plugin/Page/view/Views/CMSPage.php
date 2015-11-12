@@ -5,6 +5,7 @@
     <meta charset="utf-8">
 
     <title><?= $page->GetName(); ?></title>
+    <link rel="icon" type="image/png" href="/favicon.png">
     <meta name="description" content="<?= $page->GetName(); ?>">
     <meta name="author" content="Erik Hamrin">
     <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=false">

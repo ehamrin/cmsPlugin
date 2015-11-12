@@ -23,6 +23,7 @@ class Application
         $content = false;
 
         try{
+            $this->CheckPluginsToRun();
             $this->InvokeEvent('NewVisitor');
 
             foreach($this->plugins as $name => $plugin) {
@@ -72,6 +73,10 @@ class Application
             }
         }
 
+
+    }
+
+    public function CheckPluginsToRun(){
         //Check if a plugin wants to control what other plugins are activated
 
         $activePlugins = $this->InvokeEvent('ActivatedPlugins', $this->plugins);
@@ -89,7 +94,11 @@ class Application
     }
 
     public function GetConstantPlugins(){
-        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger');
+        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger', 'Sitemap');
+    }
+
+    public function Remove($plugin){
+        $this->plugins[$plugin]->RemoveInstance();
     }
 
     /**

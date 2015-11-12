@@ -99,8 +99,9 @@ class Logger implements \IPlugin, \plugin\admin\IAdminPanel
     }
 
     public function HookUncaughtDBError(\Exception $e){
+        $this->model->logException($e);
         throw $e;
-       // $this->model->logException($e);
+
     }
 
     public function HookNewVisitor(){

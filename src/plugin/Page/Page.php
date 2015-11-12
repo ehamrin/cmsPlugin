@@ -103,5 +103,18 @@ HTML;
         return array(new \plugin\Settings\model\Setting('page-site-title', 'My site', 'The name of your website'));
     }
 
+    public function HookGenerateSitemap(){
+        $ret = '';
+        foreach($this->model->FetchAllSlugs() as $slug){
+
+            $ret .= '
+            <url>
+                <loc>http://' . $_SERVER['SERVER_NAME'] . '/' . $slug . '</loc>
+            </url>';
+        }
+
+        return $ret;
+    }
+
 
 }

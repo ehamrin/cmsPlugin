@@ -1,4 +1,5 @@
 <?php
+
 spl_autoload_register(function ($class) {
     $class = str_replace("\\", DIRECTORY_SEPARATOR, $class);
     $mvc = dirname((__DIR__)) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $class . '.php';
@@ -20,6 +21,11 @@ function exception_handler(\Throwable $exception) {
 }
 
 set_exception_handler('exception_handler');
+
+class Error_UserError extends Exception{};
+class Error_UserWarning extends Exception{};
+class Error_UserNotice extends Exception{};
+class Error_Unknown extends Exception{};
 
 function error_handler($errno, $errstr, $errfile, $errline) {
     if(DEBUG == TRUE){
@@ -52,6 +58,30 @@ function error_handler($errno, $errstr, $errfile, $errline) {
         }
         echo '</pre></div>';
     }
+
+    switch ($errno) {
+        case E_USER_ERROR:
+            $exception = new Error_UserError("<b>My ERROR</b> [$errno] $errstr<br /> Fatal error on line $errline in file $errfile, PHP " . PHP_VERSION . " (" . PHP_OS . ")");
+            break;
+
+        case E_USER_WARNING:
+            $exception = new Error_UserWarning("<b>My WARNING</b> [$errno] $errstr\n\n  $errfile <strong>Line:</strong> $errline");
+            break;
+
+        case E_USER_NOTICE:
+            $exception = new Error_UserNotice("<b>My NOTICE</b> [$errno] $errstr\n\n  $errfile <strong>Line:</strong> $errline");
+            break;
+
+        default:
+            $exception = new Error_Unknown("Unknown error type: [$errno] $errstr\n\n  $errfile <strong>Line:</strong> $errline");
+            break;
+    }
+
+    $logger = new \plugin\Logger\model\LoggerModel();
+    if($logger->IsInstalled()){
+        $logger->logException($exception);
+    }
+
     /* Don't execute PHP internal error handler */
     return true;
 }

@@ -49,6 +49,7 @@ class PluginHandler implements \IPlugin, \plugin\admin\IAdminPanel
                     try{
                         if($action == 'delete-data'){
                             $this->application->GetPlugin($plugin)->Uninstall();
+                            $this->application->Remove($plugin);
                         }elseif($action == 'Install'){
                             $this->application->InstallPlugin($plugin);
                         }
@@ -56,6 +57,7 @@ class PluginHandler implements \IPlugin, \plugin\admin\IAdminPanel
                     }
                 }
 
+                $this->application->InvokeEvent('GenerateNewSitemap');
 
                 $this->view->Success();
         }

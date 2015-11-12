@@ -17,11 +17,9 @@ class PluginHandler
 
         foreach($this->model->GetAvailablePlugins() as $available => $facade){
             $data = $application->GetPluginMeta($available);
-
-            $ret .= '<tr><td>' . (!empty($data->Name) ? $data->Name : $available) . '</td>';
-
-            if(!in_array($available, $application->GetConstantPlugins())){
-                $ret .= '<td>
+            if(!in_array($available, $application->GetConstantPlugins())) {
+                $ret .= '<tr><td>' . (!empty($data->Name) ? $data->Name : $available) . '</td>
+                <td>
                 <div class="onoffswitch">
                     <input type="hidden" name="plugin[' . $available . '][action]" value="' . (!in_array($available, $installed) ? 'uninstalled' : '') . '"/>
                     <input type="checkbox" name="plugin[' . $available . '][value]" id="myonoffswitch_' . $available . '" class="onoffswitch-checkbox checkbox-submit" ' . (in_array($available, $installed) ? 'checked="checked"' : '') . '/>
@@ -30,12 +28,10 @@ class PluginHandler
                         <span class="onoffswitch-switch"></span>
                     </label>
                 </div>
-                </td>';
-            }else{
-                $ret .= '<td><small><em>Required by CMS</em></small></td>';
+                </td>
+                <td>' . (!empty($data->Description) ? $data->Description : '<em>Unavailable</em>') . '</td>
+                <td>' . (!empty($data->Version) ? $data->Version : '<em>Unavailable</em>') . '</td></tr>';
             }
-            $ret .= '<td>' . (!empty($data->Description) ? $data->Description : '<em>Unavailable</em>') . '</td>
-                <td>' . (!empty($data->Version) ? $data->Version : '<em>Unavailable</em>') . '</td>';
         }
 
         return $ret . '</table><input type="hidden" name="placeholder" value="1"/><button type="submit" name="submit">Submit</button></form>';

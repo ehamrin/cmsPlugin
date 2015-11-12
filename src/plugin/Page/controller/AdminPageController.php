@@ -9,6 +9,7 @@ use \plugin\Page\view;
 class AdminPageController
 {
     public function __construct(\Application $application, model\PageModel $model, view\Page $view){
+        $this->application = $application;
         $this->view = $view;
         $this->model = $model;
 
@@ -29,6 +30,7 @@ class AdminPageController
     {
         if($this->view->UserSubmitted()){
             $this->model->Save($this->view->GetUpdatedPage($id));
+            $this->application->InvokeEvent('GenerateNewSitemap');
             $this->view->EditSuccess($id);
         }
         return $this->view->Edit($id);
@@ -37,6 +39,7 @@ class AdminPageController
     public function Delete($id)
     {
         $this->model->Delete($id);
+        $this->application->InvokeEvent('GenerateNewSitemap');
         $this->view->GoToIndex();
     }
 
