@@ -56,7 +56,10 @@ class Slider implements \IPlugin, \plugin\admin\IAdminPanel
 
     public function AdminIndex(...$params)
     {
-        return 'Slider admin Index';
+        ob_start();
+        //include(APP_ROOT . 'public/vendors/filemanager/dialog.php');
+        $data = ob_get_clean();
+        return $data;
     }
 
     /*

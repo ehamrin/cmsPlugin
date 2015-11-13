@@ -25,10 +25,8 @@
 </nav>
 <header><h1><?=$page->GetName(); ?></h1></header>
 <main>
+    <?php include('templates' . DIRECTORY_SEPARATOR . $page->GetTemplate() . '.php'); ?>
 
-    <div class="wrapper">
-        <?= $page->GetContent();; ?>
-    </div>
 </main>
 
 </body>

@@ -8,25 +8,69 @@ use \plugin\Page\model;
 class Page extends \plugin\AbstractView
 {
     private $settingModel;
+    private $widgets;
     public function __construct(\Application $application, model\PageModel $model){
         $this->application = $application;
         $this->model = $model;
         $this->editForm = $this->CreateEditForm();
+        $this->ScanTemplatesForWidgetUse();
     }
 
     private function CreateEditForm(){
         $form = new \Form\controller\FormController("EditPage");
 
+        $options = array();
+        $dir = scandir(__DIR__ . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'templates/');
+
+        //Remove parent dir
+        array_shift($dir);
+        array_shift($dir);
+
+        $widgets = array();
+
+        foreach($dir as $option){
+            $option = str_replace('.php', '', $option);
+            $options[] = new \Form\model\Option(ucfirst($option), $option);
+        }
 
         $form->AddInput(
             (new \Form\model\input\Text("title"))
                 ->SetLabel("Title"),
             (new \Form\model\input\Textarea("content"))
                 ->SetAttributes(new \Form\model\Option("class", "tinyMCE")),
-
+            (new \Form\model\input\Select('template'))
+                ->AddOption(...$options)
+                ->SetLabel("Template"),
             (new \Form\model\input\Submit("submit", "Submit"))
         );
         return $form;
+    }
+
+    private function ScanTemplatesForWidgetUse(){
+        $dir = scandir(__DIR__ . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'templates/');
+
+        //Remove parent dir
+        array_shift($dir);
+        array_shift($dir);
+
+        $widgets = array();
+
+        foreach($dir as $option){
+            $file = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'templates/' . $option);
+
+            preg_match_all('/DoWidget\(.*?\)/', $file, $matches);
+
+            if(count($matches[0])){
+                $option = str_replace('.php', '', $option);
+                $widgets[$option] = array();
+
+                foreach($matches[0] as $match){
+                    $widgetHolder = preg_replace("/DoWidget\(('|\")(.*?)('|\")(.*?)\)/", '$2', $match);
+                    $widgets[$option][$widgetHolder] = $widgetHolder;
+                }
+            }
+        }
+        $this->widgets = $widgets;
     }
 
     public function RenderCMS(model\Page $page){
@@ -52,7 +96,7 @@ class Page extends \plugin\AbstractView
     }
 
     public function AdminList(){
-        return $this->View('AdminList');
+        return $this->View('AdminList', array('widgets' => $this->widgets));
     }
 
     public function Edit($pageID){
@@ -60,6 +104,7 @@ class Page extends \plugin\AbstractView
             $page = $this->model->FindByID($pageID);
             $this->editForm->UpdateValue("title", $page->GetName());
             $this->editForm->UpdateValue("content", $page->GetContent());
+            $this->editForm->UpdateValue("template", $page->GetTemplate());
         }
         return $this->editForm->GetView();
     }
@@ -70,7 +115,14 @@ class Page extends \plugin\AbstractView
 
     public function GetUpdatedPage($pageID){
         $data = $this->editForm->GetData();
-        return new model\Page($data['title'], "", $data['content'], $pageID);
+
+        $page = new model\Page();
+        $page->SetName($data['title']);
+        $page->SetContent($data['content']);
+        $page->SetID($pageID);
+        $page->SetTemplate($data['template']);
+
+        return $page;
     }
 
     public function EditSuccess($pageID){

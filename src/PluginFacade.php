@@ -21,7 +21,6 @@ class PluginFacade
      * @throws PluginNotValidException
      */
     public function __construct($className){
-
         $this->reflect = new ReflectionClass($className);
 
         if(!$this->reflect->implementsInterface('\\IPlugin')) {

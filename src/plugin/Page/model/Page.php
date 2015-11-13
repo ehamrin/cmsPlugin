@@ -10,20 +10,42 @@ class Page
     private $slug;
     private $content;
     private $project;
+    private $template;
     private $id;
 
-    public function __construct($name, $slug, $content, $id = 0, $project = null){
+    /**
+     * @param string $name
+     */
+    public function SetName($name)
+    {
         $this->name = $name;
-        if($this->GetID() == 1){
-            $this->slug = "";
-        }else{
-            $this->slug = $slug;
-        }
+        $this->GenerateSlug();
+    }
 
+    /**
+     * @param string $content
+     */
+    public function SetContent($content)
+    {
         $this->content = $content;
+    }
+
+    /**
+     * @param string $project
+     */
+    public function SetProject($project)
+    {
         $this->project = $project;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function SetID($id)
+    {
         $this->id = $id;
     }
+
 
     public function GetName(){
         return $this->name;
@@ -45,6 +67,14 @@ class Page
         return $this->project;
     }
 
+    public function GetTemplate(){
+        return $this->template ?? 'full-width';
+    }
+
+    public function SetTemplate($template){
+        $this->template = $template;
+    }
+
     /* http://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string */
     public function GenerateSlug(){
         if($this->GetID() == 1){
@@ -52,6 +82,8 @@ class Page
         }
 
         $text = $this->GetName();
+
+        $text = str_replace(array('å', 'Å', 'ä', 'Ä', 'ö', 'Ö'), array('a', 'A', 'a', 'A', 'o', 'O'), $text);
 
         // replace non letter or digits by -
         $text = preg_replace('~[^\\pL\d]+~u', '-', $text);

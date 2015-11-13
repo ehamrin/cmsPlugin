@@ -10,7 +10,14 @@
     <tr>
         <td><?= $log->date; ?></td>
         <td class="exception-type">
-            See information
+            <?php
+            $line = explode('<br />',nl2br($log->exception))[0];
+            $short = substr($line, 0, 70);
+            echo $short;
+            if($line != $short){
+              echo '...';
+            }
+            ?>
             <span class="exception-info error">
                 <pre><?= $log->exception; ?></pre>
             </span>

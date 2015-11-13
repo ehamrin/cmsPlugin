@@ -5,9 +5,11 @@ class Application
 {
     private static $pluginNamespace = 'plugin';
     private static $pluginDirectory = APP_ROOT . 'src/plugin/';
+    private static $widgetDirectory = APP_ROOT . 'src/widget/';
 
     /* @var $plugins PluginFacade[] */
     private $plugins = array();
+    private $widgets = array();
 
     public  function __construct($url){
         $url = explode('/', $url);
@@ -24,6 +26,7 @@ class Application
 
         try{
             $this->CheckPluginsToRun();
+            $this->LoadWidgets();
             $this->InvokeEvent('NewVisitor');
 
             foreach($this->plugins as $name => $plugin) {
@@ -93,6 +96,45 @@ class Application
         }
     }
 
+    public function LoadWidgets(){
+        $widgets = array();
+        foreach($this->plugins as $pluginName => $plugin){
+            $dir = self::$pluginDirectory . $pluginName . DIRECTORY_SEPARATOR . 'widget';
+
+            if(is_dir($dir)){
+                $pluginWidgets = scandir($dir);
+                //Remove parent directory "." and ".."
+                array_shift($pluginWidgets);
+                array_shift($pluginWidgets);
+                foreach($pluginWidgets as $widget){
+                    if(is_file($dir . DIRECTORY_SEPARATOR . $widget . DIRECTORY_SEPARATOR . $widget . '.php')) {
+                        $widgets[$widget] = '\\' . self::$pluginNamespace . '\\' . $pluginName . '\\widget\\' . $widget . '\\' . $widget;
+                    }
+                }
+            }
+        }
+
+        if(is_dir(self::$widgetDirectory)){
+            $externalWidgets = scandir(self::$widgetDirectory);
+            //Remove parent directory "." and ".."
+            array_shift($externalWidgets);
+            array_shift($externalWidgets);
+            foreach($externalWidgets as $widget){
+                if(is_file(self::$widgetDirectory . $widget . DIRECTORY_SEPARATOR . $widget . '.php')){
+                    $widgets[$widget] = '\\widget\\' . $widget . '\\' . $widget;
+                }
+            }
+        }
+
+        foreach($widgets as $widget => $className){
+            $reflection = new ReflectionClass($className);
+
+            if($reflection->implementsInterface('\\IWidget')) {
+                $this->widgets[$widget] = $reflection->newInstance();
+            }
+        }
+    }
+
     public function GetConstantPlugins(){
         return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger', 'Sitemap');
     }
@@ -156,6 +198,19 @@ class Application
         }
 
         return $this->plugins[$plugin]->GetInstance();
+    }
+
+    public function GetWidget(\string $widget = null)
+    {
+        if($widget == null){
+            return $this->widgets;
+        }
+
+        if(!$this->widgets[$widget]){
+            return false;
+        }
+
+        return $this->widgets[$widget];
     }
 
     public function GetPluginMeta(\string $plugin)
