@@ -58,15 +58,15 @@ class Page extends \plugin\AbstractView
         foreach($dir as $option){
             $file = file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'templates/' . $option);
 
-            preg_match_all('/DoWidget\(.*?\)/', $file, $matches);
+            //preg_match_all('/DoWidget\(.*?\)/', $file, $matches);
+            preg_match_all("/DoWidget\((\'|\")(.*?)(\'|\")(.*?)\)/", $file, $matches);
 
-            if(count($matches[0])){
+            if(count($matches[2])){
                 $option = str_replace('.php', '', $option);
                 $widgets[$option] = array();
 
-                foreach($matches[0] as $match){
-                    $widgetHolder = preg_replace("/DoWidget\(('|\")(.*?)('|\")(.*?)\)/", '$2', $match);
-                    $widgets[$option][$widgetHolder] = $widgetHolder;
+                foreach($matches[2] as $match){
+                    $widgets[$option][$match] = $match;
                 }
             }
         }
