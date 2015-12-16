@@ -1,17 +1,19 @@
-@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+@import url(//fonts.googleapis.com/css?family=Lato:300,400,700);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:700);
 
 nav {
-    background-color: #6da9bf;
+    background-color: #2d2d2d;
     width: auto;
 }
 nav ul {
     list-style: none;
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     line-height: 1;
     display: block;
-    zoom: 1;
+    max-width: 940px;
+    text-align: center;
+
 }
 nav ul:after {
     content: " ";
@@ -51,7 +53,7 @@ nav ul li a {
 }
 nav ul li.current a,
 nav ul li a:hover {
-    color: #333333;
+    color: #f7f7f7;
     border-bottom: none;
 }
 
@@ -162,6 +164,13 @@ header h1{
     background-position: center center;
 }
 
+.full-widget{
+    height: 200px;
+    padding: 50px;
+    text-align: center;
+    background-color: #f4f4f1;
+}
+
 
 @media screen and (max-width: 768px) {
     nav ul li {
@@ -173,7 +182,7 @@ header h1{
         -moz-box-sizing: border-box;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
-        border-bottom: 1px solid #6DA9BF;
+        border-bottom: 1px solid #f7f7f7;
     }
     nav ul li.last > a,
     nav ul li:last-child > a {

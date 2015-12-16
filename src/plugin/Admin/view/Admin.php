@@ -124,14 +124,18 @@ HTML;
 
     }
     public function AdminPanel(){
+
         $ret = '<h1>You are logged in as ' . $this->application->GetUser()->GetUsername() . '</h1><!--';
+
         foreach ($this->application->InvokeEvent("AdminPanel") as $event) {
+
             /* @var $event \Event */
             if(!empty($event->GetData())){
             $ret .= '--><div class="admin-panel-item inline-1-3">' . $event->GetData() . '</div><!--';
             }
         }
         $ret .= '-->';
+
         return $ret;
     }
 

@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
     try {
         $conn = Database::GetConnection();
     } catch (\Exception $e) {
-        var_dump($e->getMessage());
+        debug($e->getMessage());
         unlink($my_file);
     }
 }

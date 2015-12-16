@@ -11,6 +11,7 @@ class Page
     private $content;
     private $project;
     private $template;
+    private $module;
     private $id;
 
     /**
@@ -73,6 +74,14 @@ class Page
 
     public function SetTemplate($template){
         $this->template = $template;
+    }
+
+    public function GetModule(){
+        return $this->module ?? '';
+    }
+
+    public function SetModule($module){
+        $this->module = $module;
     }
 
     /* http://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string */

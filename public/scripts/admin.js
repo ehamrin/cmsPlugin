@@ -66,7 +66,9 @@ $(document).ready(function(){
 
     $('.checkbox-submit').on('change', function(e){
         var target = $(e.target);
-        if(!target.prop('checked')){
+        var hidden = target.siblings('input');
+
+        if(!target.prop('checked') && hidden.val() != 'uninstalled'){
             swal({
                 title: "Do you also want to delete all data?",
                 text: "You will not be able to recover it if you do!",
@@ -79,10 +81,9 @@ $(document).ready(function(){
                 closeOnCancel: true
             }, function (isConfirm) {
                 if (isConfirm) {
-
-
+                    hidden.val('delete-data');
                 }else{
-
+                    hidden.val('keep-data');
                 }
             });
         }

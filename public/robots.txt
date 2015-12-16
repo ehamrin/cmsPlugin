@@ -1,0 +1,9 @@
+Sitemap: http://plugins.erikhamrin.se/sitemap.xml
+User-agent: *
+Disallow: /vendors/
+Disallow: /images/
+Disallow: /thumbs/
+Disallow: /uploads/
+Disallow: /admin/
+Disallow: /scripts/
+Allow: /scripts/scripts.js
