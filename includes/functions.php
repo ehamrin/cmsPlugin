@@ -10,7 +10,7 @@ spl_autoload_register(function ($class) {
 });
 
 function exception_handler(\Throwable $exception) {
-    if(DEBUG == TRUE) {
+    if(DEBUG) {
         echo '<div class="error debugging">';
         echo '<b>Fatal error</b>:  Uncaught exception \'' . get_class($exception) . '\' with message ';
         echo $exception->getMessage() . '<br>';

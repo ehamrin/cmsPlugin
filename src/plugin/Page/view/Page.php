@@ -20,6 +20,7 @@ class Page extends \plugin\AbstractView
         $form = new \Form\controller\FormController("EditPage");
 
         $options = array();
+        $moduleOptions = array();
         $dir = scandir(__DIR__ . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'templates/');
 
         //Remove parent dir
@@ -33,6 +34,16 @@ class Page extends \plugin\AbstractView
             $options[] = new \Form\model\Option(ucfirst($option), $option);
         }
 
+        $moduleOptions[] = new \Form\model\Option('--Välj modul--', '');
+
+        foreach($this->application->InvokeEvent("PageModules") as $event){
+            foreach($event->GetData() as $option) {
+
+                $moduleOptions[] = new \Form\model\Option(ucfirst($option), $option);
+            }
+
+        }
+
         $form->AddInput(
             (new \Form\model\input\Text("title"))
                 ->SetLabel("Title"),
@@ -41,6 +52,9 @@ class Page extends \plugin\AbstractView
             (new \Form\model\input\Select('template'))
                 ->AddOption(...$options)
                 ->SetLabel("Template"),
+            (new \Form\model\input\Select('module'))
+                ->AddOption(...$moduleOptions)
+                ->SetLabel("Module"),
             (new \Form\model\input\Submit("submit", "Submit"))
         );
         return $form;
@@ -73,12 +87,18 @@ class Page extends \plugin\AbstractView
         $this->widgets = $widgets;
     }
 
-    public function RenderCMS(model\Page $page){
+    public function RenderCMS(model\Page $page, ...$params){
         $headerHook = '';
         foreach ($this->application->InvokeEvent("PageHeaderHTML", $page) as $event) {
             $headerHook .= $event->GetData();
         }
-        return $this->View('CMSPage', array('page' => $page, 'headerHook' => $headerHook));
+
+        $moduleHook = '';
+        foreach ($this->application->InvokeEvent("PageModule" . $page->getModule(), $params) as $event) {
+            $moduleHook .= $event->GetData();
+        }
+
+        return $this->View('CMSPage', array('page' => $page, 'headerHook' => $headerHook, 'moduleHook' => $moduleHook));
 
     }
 
@@ -105,6 +125,7 @@ class Page extends \plugin\AbstractView
             $this->editForm->UpdateValue("title", $page->GetName());
             $this->editForm->UpdateValue("content", $page->GetContent());
             $this->editForm->UpdateValue("template", $page->GetTemplate());
+            $this->editForm->UpdateValue("module", $page->GetModule());
         }
         return $this->editForm->GetView();
     }
@@ -121,6 +142,7 @@ class Page extends \plugin\AbstractView
         $page->SetContent($data['content']);
         $page->SetID($pageID);
         $page->SetTemplate($data['template']);
+        $page->SetModule($data['module']);
 
         return $page;
     }

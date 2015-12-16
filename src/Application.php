@@ -38,6 +38,7 @@ class Application
                     //Create a new instance of the class
                     $instance = $this->GetPlugin($name);
                     if ($reflectMethod->invoke($instance, $action)) {
+
                         $content = $instance->Init($action, ...$url);
                     }
                 }

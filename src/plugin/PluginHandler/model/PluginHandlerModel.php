@@ -38,8 +38,8 @@ class PluginHandlerModel
         $this->conn->exec("
           CREATE TABLE IF NOT EXISTS `plugin` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) COLLATE utf8_swedish_ci NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+  `name` varchar(100) COLLATE utf8_swedish_ci NOT NULL
+);
 
   ALTER TABLE `plugin`
   ADD PRIMARY KEY (`id`);

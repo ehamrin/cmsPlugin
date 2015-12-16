@@ -28,7 +28,7 @@ class Page implements \IPlugin, \plugin\Admin\IAdminPanel
 
     function Init($method="Index", ...$params){
         if(!method_exists($this, $method) && $this->HookRootAccess($method)){
-            return $this->publicController->ViewCMS(strtolower($method));
+            return $this->publicController->ViewCMS(strtolower($method), ...$params);
         }elseif(method_exists($this->publicController, $method)){
             return $this->publicController->{$method}(...$params);
         }

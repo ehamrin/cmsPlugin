@@ -13,11 +13,11 @@ class PublicPageController
 
     }
 
-    public function ViewCMS($id = "")
+    public function ViewCMS($id = "", ...$params)
     {
         try{
             $page = $this->model->FindByURL($id);
-            return $this->view->RenderCMS($page);
+            return $this->view->RenderCMS($page, ...$params);
         }catch(\Exception $e){
             return false;
         }
