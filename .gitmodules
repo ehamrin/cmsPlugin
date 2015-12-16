@@ -1,0 +1,3 @@
+[submodule "src/plugin/AlcoholTrip"]
+	path = src/plugin/AlcoholTrip
+	url = https://github.com/ehamrin/1dv449_eh222ve_Project.git
