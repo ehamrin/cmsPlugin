@@ -1,6 +1,6 @@
 importScripts('scripts/cache-polyfill.js');
 
-var CACHE_VERSION = '2016-01-07-15-15';
+var CACHE_VERSION = '2016-01-07-16-48';
 var CACHE_FILES = [
     './',
     '/scripts/scripts.min.js',
@@ -56,8 +56,10 @@ function requestBackend(event){
 
         return res;
     }).catch(function() {
-        // If both fail, show a generic fallback:
-        return caches.match('/offline.html');
+        // If both fail, show a generic fallback, but only if user requested text/html
+        if (request.headers.get('accept').includes('text/html')) {
+            return caches.match('/offline.html');
+        }
     })
 }
 
