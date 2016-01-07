@@ -18,6 +18,7 @@ class Database
     private static function CreateConnection(){
         self::$connection =  new \PDO('mysql:host=' . self::$dsn . ';dbname=' . self::$database . ';', self::$username, self::$password, array(\PDO::FETCH_OBJ));
         self::$connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        self::$connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_OBJ);
         return self::$connection;
     }
 }

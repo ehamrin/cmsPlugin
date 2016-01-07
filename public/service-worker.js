@@ -1,14 +1,12 @@
 importScripts('scripts/cache-polyfill.js');
 
-var CACHE_VERSION = 'app-v0.3';
+var CACHE_VERSION = '2016-01-07-15-15';
 var CACHE_FILES = [
-    '/',
-    'scripts/scripts.js',
-    'css/styles.css',
-    '//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
-    '//fonts.googleapis.com/css?family=Lato:300,400,700',
-    '//fonts.googleapis.com/css?family=Open+Sans:700'
-
+    './',
+    '/scripts/scripts.min.js',
+    '/css/styles.min.css',
+    '/favicon.png',
+    '/offline.html'
 ];
 
 self.addEventListener('install', function (event) {
@@ -25,28 +23,41 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(
         caches.match(event.request).then(function(res){
             if(res){
+                console.log("Found match: ", res);
                 return res;
             }
-            requestBackend(event);
+            return requestBackend(event);
         })
     )
 });
 
 function requestBackend(event){
-    var url = event.request.clone();
-    return fetch(url).then(function(res){
+    var request = event.request.clone();
+
+    return fetch(request).then(function(res){
+        console.log("Fetching: ", res);
         //if not a valid response send the error
-        if(!res || res.status !== 200 || res.type !== 'basic'){
+
+        if(!res || res.status !== 200 || !(res.type === 'basic' || res.type === 'cors')){
             return res;
         }
 
         var response = res.clone();
 
-        caches.open(CACHE_VERSION).then(function(cache){
-            cache.put(event.request, response);
-        });
+        //Test url of it contains the word "admin", if so, do not cache
+        if(response.url.match(/.*(admin).*/)){
+            //Do nothing here!
+            console.log("Admin content, no cache here: ", response);
+        }else{
+            caches.open(CACHE_VERSION).then(function(cache){
+                cache.put(event.request, response);
+            });
+        }
 
         return res;
+    }).catch(function() {
+        // If both fail, show a generic fallback:
+        return caches.match('/offline.html');
     })
 }
 

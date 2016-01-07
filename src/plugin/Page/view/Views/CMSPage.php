@@ -9,24 +9,30 @@
     <meta name="description" content="<?= $page->GetName(); ?>">
     <meta name="author" content="Erik Hamrin">
     <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=false">
-    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/normalize.min.css">
     <link rel="stylesheet" href="/vendors/fancybox/jquery.fancybox.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/css/styles.css?v=1.1">
-    <script src="/scripts/jquery.js"></script>
-    <script type="text/javascript" src="/scripts/scripts.js"></script>
-    <script type="text/javascript" src="/vendors/fancybox/jquery.fancybox.pack.js"></script>
+    <link rel="stylesheet" href="/vendors/sweetalert.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/styles.min.css?v=1.1">
+<?php foreach($this->application->GetCSSDependency() as $stylesheet): ?>
+    <link rel="stylesheet" href="<?= $stylesheet; ?>">
+<?php endforeach; ?>
 </head>
-
 <body>
-<?= $headerHook; ?>
-<nav>
-    <?= $this->RenderNav($page); ?>
-</nav>
-<header><h1><?=$page->GetName(); ?></h1></header>
-<main>
-    <?php include('templates' . DIRECTORY_SEPARATOR . $page->GetTemplate() . '.php'); ?>
-</main>
-
+    <?= $headerHook; ?>
+    <nav>
+        <?= $this->RenderNav($page); ?>
+    </nav>
+    <header><h1><?=$page->GetName(); ?></h1></header>
+    <main>
+        <?php include('templates' . DIRECTORY_SEPARATOR . $page->GetTemplate() . '.php'); ?>
+    </main>
+    <script type="text/javascript" src="/scripts/jquery.js"></script>
+    <script type="text/javascript" src="/vendors/fancybox/jquery.fancybox.pack.js"></script>
+    <script type="text/javascript" src="/vendors/sweetalert.min.js"></script>
+    <script type="text/javascript" src="/scripts/scripts.min.js"></script>
+<?php foreach($this->application->GetScriptDependency() as $script): ?>
+    <script type="text/javascript" src="<?= $script; ?>"></script>
+<?php endforeach; ?>
 </body>
 </html>

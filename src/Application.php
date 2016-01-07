@@ -4,7 +4,7 @@
 class Application
 {
     private static $pluginNamespace = 'plugin';
-    private static $pluginDirectory = APP_ROOT . 'src/plugin/';
+    public static $pluginDirectory = APP_ROOT . 'src/plugin/';
     private static $widgetDirectory = APP_ROOT . 'src/widget/';
 
     /* @var $plugins PluginFacade[] */
@@ -27,7 +27,6 @@ class Application
         try{
             $this->CheckPluginsToRun();
             $this->LoadWidgets();
-            $this->InvokeEvent('NewVisitor');
 
             foreach($this->plugins as $name => $plugin) {
                 $event = 'HookRootAccess';
@@ -137,7 +136,7 @@ class Application
     }
 
     public function GetConstantPlugins(){
-        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger', 'Sitemap');
+        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger', 'Sitemap', 'Page', 'PublicResource');
     }
 
     public function Remove($plugin){
@@ -237,5 +236,25 @@ class Application
             return new PluginFacade($pluginClassName);
         }
         throw new Exception("The plugin file does not exist!");
+    }
+
+    private $scripts = array();
+
+    public function AddScriptDependency($script){
+        $this->scripts[$script] = $script;
+    }
+
+    public function GetScriptDependency(){
+        return $this->scripts;
+    }
+
+    private $stylesheets = array();
+
+    public function AddCSSDependency($stylesheet){
+        $this->stylesheets[$stylesheet] = $stylesheet;
+    }
+
+    public function GetCSSDependency(){
+        return $this->stylesheets;
     }
 }
