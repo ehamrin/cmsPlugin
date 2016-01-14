@@ -28,7 +28,7 @@ class LoggerModel
         $ret = array();
 
 
-        $stmt = $this->conn->prepare("SELECT * FROM exception_logger  ORDER BY date DESC");
+        $stmt = $this->conn->prepare("SELECT * FROM exception_logger  ORDER BY date DESC LIMIT 100");
         $stmt->execute();
 
         while($obj = $stmt->fetchObject()){
@@ -41,7 +41,7 @@ class LoggerModel
         $ret = array();
 
 
-        $stmt = $this->conn->prepare("SELECT * FROM visitor_logger ORDER BY date DESC");
+        $stmt = $this->conn->prepare("SELECT * FROM visitor_logger ORDER BY date DESC  LIMIT 100");
         $stmt->execute();
 
         while($obj = $stmt->fetchObject()){

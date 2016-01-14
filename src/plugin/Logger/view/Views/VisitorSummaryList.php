@@ -22,7 +22,7 @@
             </span>
             </td>
             <td><?= $log->info['REMOTE_ADDR']; ?></td>
-            <td><?= $log->info['HTTP_USER_AGENT']; ?></td>
+            <td><?= isset($log->info['HTTP_USER_AGENT']) ? $log->info['HTTP_USER_AGENT'] : ''; ?></td>
             <td><?= $log->user; ?></td>
         </tr>
     <?php endforeach; ?>

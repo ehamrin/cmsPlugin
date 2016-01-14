@@ -28,7 +28,7 @@ class Admin implements \IPlugin
         if(!$this->application->IsAuthenticated()){
             $login= $this->application->GetPlugin('Authentication')->Init('Login');
             if($login !== true){
-                return $this->view->Render($login);
+                return $login;
             }
         }
 

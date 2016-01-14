@@ -171,6 +171,43 @@ header h1{
     background-color: #f4f4f1;
 }
 
+.network-flash-message
+{
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    text-align: center;
+    color: #fff;
+    z-index: 5;
+    position: fixed;
+}
+
+.network-flash-message p
+{
+    max-width: 980px;
+    display: block;
+    margin: 0 auto;
+}
+
+.network-flash-message p.title
+{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.network-flash-message .discrete{
+    color: rgba(0,0,0,0.6);
+    display: block;
+}
+#network_online{
+    background: #419919
+}
+#network_offline
+{
+    background: #991b3c;
+}
+
 
 @media screen and (max-width: 768px) {
     nav ul li {
@@ -195,4 +232,6 @@ header h1{
         display: none;
     }
 }
+
+
 

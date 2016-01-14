@@ -19,7 +19,7 @@
                 <pre><?php var_dump($log->info); ?></pre>
             </span>
             </td>
-            <td><?= $log->info['HTTP_USER_AGENT']; ?></td>
+            <td><?= isset($log->info['HTTP_USER_AGENT']) ? $log->info['HTTP_USER_AGENT'] : ''; ?></td>
             <td><?= $log->user; ?></td>
             <td><?= $log->session; ?></td>
         </tr>

@@ -76,18 +76,19 @@ class Settings implements \IPlugin, \plugin\admin\IAdminPanel
      * ------------------------------------------------------
      */
 
-    public function HookAdminItems(){
+    /*
+       public function HookAdminItems{
 
-        return array(
-            new \NavigationItem(
-                'Settings',
-                'setting',
-                array(),
-                'manage-setting',
-                'fa-cogs'
-            )
-        );
-    }
+            return array(
+                new \NavigationItem(
+                    'Settings',
+                    'setting',
+                    array(),
+                    'manage-setting',
+                    'fa-cogs'
+                )
+            );
+    }*/
 
     public function HookUserPermissions(){
         return array(new \plugin\Authentication\model\Permission('Manage settings', 'manage-settings'));

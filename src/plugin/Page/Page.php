@@ -109,7 +109,7 @@ HTML;
 
             $ret .= '
             <url>
-                <loc>http://' . $_SERVER['SERVER_NAME'] . '/' . $slug . '</loc>
+                <loc>https://' . $_SERVER['SERVER_NAME'] . '/' . $slug . '</loc>
             </url>';
         }
 

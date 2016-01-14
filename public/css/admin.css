@@ -8,7 +8,6 @@ nav{
     top: 100px;
     bottom: 0;
     background: #6DA9BF;
-
 }
 
 header{
@@ -32,7 +31,7 @@ main{
     min-height:calc(100% - 130px);
     left: 200px;
     overflow: auto;
-
+    z-index: -1;
     right: 0;
     background: #d1d1d1;
     -webkit-box-shadow:inset 10px 10px 30px -15px rgba(0,0,0,1);

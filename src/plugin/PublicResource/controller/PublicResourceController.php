@@ -10,6 +10,7 @@ class PublicResourceController
     private static $cache_life = 5; //Minutes
 
     public function __construct(\Application $application, model\PublicResourceModel $model, view\PublicResourceView $view){
+        $this->application = $application;
         $this->view = $view;
         $this->model = $model;
     }
@@ -50,6 +51,15 @@ class PublicResourceController
             }
 
             return file_get_contents($file);
+
+        }elseif(method_exists($this->application->GetPlugin($plugin), 'HookJSON')){
+            $file = $this->application->GetPlugin($plugin)->HookJSON($filename);
+
+            if($file != null && $file != false){
+                header("Content-Type: $contentType");
+                header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+                return $file;
+            }
         }
 
         return false;

@@ -94,3 +94,10 @@ function debug($data){
     echo '</pre></div>';
 }
 
+function get_dir($dir){
+    $files = scandir($dir);
+    array_shift($files);
+    array_shift($files);
+    return $files;
+}
+

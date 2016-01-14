@@ -130,6 +130,18 @@ HTML;
 
     public function ShowLogin(){
         return '
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/admin.css?v=1.0">
+</head>
+<body>
         <div id="login_form">
             <form method="POST" >
                 <input type="text" name="username" placeholder="Username" />
@@ -137,6 +149,8 @@ HTML;
                 <input type="submit" class="button" name="login" value="Log in" />
             </form>
         </div>
+        </body>
+</html>
         ';
     }
 

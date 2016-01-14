@@ -1,4 +1,5 @@
 ## Directory-based project format:
 .idea/
+*/TweetPHP/
 
 public/vendors/*

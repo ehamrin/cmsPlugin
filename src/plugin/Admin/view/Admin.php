@@ -85,7 +85,7 @@ class Admin
             ],
             extended_valid_elements: 'span[class]',
             content_css: [
-                'http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
+                'https://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css',
                 '/css/normalize.css',
                 '/css/tiny.css'
             ],
