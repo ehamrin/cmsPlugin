@@ -137,7 +137,7 @@ class UserModel
     /**
      * @return bool
      */
-    public function IsLoggedIn(){
+    public static function IsLoggedIn(){
         return isset($_SESSION["admin"]);
     }
 
@@ -148,7 +148,7 @@ class UserModel
         return isset($_SESSION["admin"]);
     }
 
-    public function Logout(){
+    public static function Logout(){
         unset($_SESSION["admin"]);
     }
 
@@ -160,8 +160,8 @@ class UserModel
         return $_SESSION['admin'];
     }
 
-    public function Install(){
-        $this->conn->exec('
+    public static function Install(){
+        \Database::GetConnection()->exec('
           CREATE TABLE IF NOT EXISTS `user` (
               `id` int(11) NOT NULL,
               `username` varchar(100) NOT NULL,
@@ -181,15 +181,15 @@ class UserModel
         ');
     }
 
-    public function Uninstall(){
-        $this->conn->exec('
+    public static function Uninstall(){
+        \Database::GetConnection()->exec('
           DROP TABLE IF EXISTS `user`
         ');
     }
 
-    public function IsInstalled(){
+    public static function IsInstalled(){
         try {
-            $result = $this->conn->query("SELECT 1 FROM user LIMIT 1");
+            $result = \Database::GetConnection()->query("SELECT 1 FROM user LIMIT 1");
         } catch (\Exception $e) {
             return FALSE;
         }

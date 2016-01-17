@@ -12,44 +12,22 @@ namespace plugin\PublicResource;
  */
 
 
-class PublicResource implements \IPlugin
+class PublicResource extends \plugin\AbstractPlugin
 {
-
-    private $model;
-    private $view;
-    private $controller;
-
-    public function __construct(\Application $application){
-        $this->application = $application;
-        $this->model = new model\PublicResourceModel();
-        $this->view = new view\PublicResourceView($this->application, $this->model);
-
-        $this->controller = new controller\PublicResourceController($this->application, $this->model, $this->view);
-    }
-
-    function Init($method="Index", ...$params){
-        if(method_exists($this->controller, $method)){
-            return $this->controller->{$method}(...$params);
-        }
-        return false;
-    }
-
-    public function Index(...$params){
-        return false;
-    }
-
-    public function Install(){}
-
-    public function UnInstall(){}
-
-    public function IsInstalled(){ return true; }
-
     public function HookRootAccess($method){
         $method = strtolower($method);
         if($method == 'css' || $method == 'js' || $method == 'json'){
             return true;
         }
         return false;
+    }
+
+    public function HookPluginSettings(){
+        return array(
+            new \plugin\Settings\model\Setting('json-cache-time', 10, 'Cache time for json files (minutes)'),
+            new \plugin\Settings\model\Setting('js-cache-time', 1440, 'Cache time for javascript files (minutes)'),
+            new \plugin\Settings\model\Setting('css-cache-time', 1440, 'Cache time for css files (minutes)')
+        );
     }
 
 }

@@ -6,4 +6,4 @@ Disallow: /thumbs/
 Disallow: /uploads/
 Disallow: /admin/
 Disallow: /scripts/
-Allow: /scripts/scripts.js
+Allow: /scripts/scripts.min.js

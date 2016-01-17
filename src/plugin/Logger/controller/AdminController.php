@@ -4,7 +4,7 @@
 namespace plugin\Logger\controller;
 
 
-class AdminLoggerController
+class AdminController
 {
     public function __construct($application, $model, $view)
     {

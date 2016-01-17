@@ -31,6 +31,9 @@
     <script type="text/javascript" src="/vendors/fancybox/jquery.fancybox.pack.js"></script>
     <script type="text/javascript" src="/vendors/sweetalert.min.js"></script>
     <script type="text/javascript" src="/scripts/scripts.min.js"></script>
+<?php if($this->application->PluginExists('Offline') && HTTPS): ?>
+    <script type="text/javascript" src="/js/Offline/offline.min.js"></script>
+<?php endif; ?>
 <?php foreach($this->application->GetScriptDependency() as $script): ?>
     <script type="text/javascript" src="<?= $script; ?>"></script>
 <?php endforeach; ?>

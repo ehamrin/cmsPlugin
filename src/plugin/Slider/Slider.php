@@ -9,58 +9,13 @@ namespace plugin\Slider;
  * @Icon  fa-image
  */
 
-class Slider implements \IPlugin, \plugin\admin\IAdminPanel
+class Slider extends \plugin\AbstractPlugin
 {
     public function __construct(\Application $application){
-        $this->application = $application;
+        parent::__construct($application);
         $this->view = new view\Slider();
     }
 
-
-    function Init($method="Index", ...$params){
-        return $this->Index();
-    }
-
-    public function AdminPanelInit($method = "Index", ...$params)
-    {
-        $method = 'Admin'.$method;
-
-        if(method_exists($this, $method)) {
-            return $this->{$method}(...$params);
-        }
-        return false;
-    }
-
-    public function Install(){
-        //check for folder public/images/slider
-        //make sure Apache can write to folder
-        //Setup table
-    }
-
-    public function UnInstall(){
-        //remove folder public/images/slider
-        //Drop table
-    }
-
-    public function IsInstalled(){
-        //check for folder public/images/slider
-        //make sure Apache can write to folder
-        //Setup table
-        return true;
-    }
-
-    public function Index(...$params)
-    {
-        return 'Slider Index';
-    }
-
-    public function AdminIndex(...$params)
-    {
-        ob_start();
-        //include(APP_ROOT . 'public/vendors/filemanager/dialog.php');
-        $data = ob_get_clean();
-        return $data;
-    }
 
     /*
      * ------------------------------------------------------

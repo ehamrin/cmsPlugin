@@ -42,11 +42,30 @@ class SettingModel
     }
 
     public function Save(Setting ...$settings){
-        $stmt = $this->conn->prepare("UPDATE setting SET value = ? WHERE name = ?");
+
+
+        $update = $this->conn->prepare("UPDATE setting SET value = ? WHERE name = ?");
+        $insert = $this->conn->prepare("INSERT INTO setting (value, name) VALUE(?,?)");
 
         foreach($settings as $setting){
-            $stmt->execute(array($setting->GetValue(), $setting->GetName()));
+            $stmt = $this->conn->prepare("SELECT * FROM setting WHERE name = ? LIMIT 1");
+            $stmt->execute(array($setting->GetName()));
+
+            if(!$stmt->rowCount()){
+                $insert->execute(array($setting->GetValue(), $setting->GetName()));
+            }else{
+                $update->execute(array($setting->GetValue(), $setting->GetName()));
+            }
         }
+    }
+
+    public function Install(){
+        $this->conn->exec("
+          CREATE TABLE IF NOT EXISTS `setting` (
+  `name` varchar(100) COLLATE utf8_swedish_ci NOT NULL,
+  `value` varchar(100) COLLATE utf8_swedish_ci NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
+        ");
     }
 
 }

@@ -3,12 +3,27 @@
 define('APP_ROOT', dirname(getcwd()) . DIRECTORY_SEPARATOR);
 
 define('DEBUG', TRUE);
+define('HTTPS', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on'));
 
 ini_set('display_errors', DEBUG);
 error_reporting(E_ALL);
 
 require_once APP_ROOT . 'includes/functions.php';
+
+$currentCookieParams = session_get_cookie_params();
+
+$lifetime=1200;
+$secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
+
+session_set_cookie_params(
+    $lifetime,
+    $currentCookieParams["path"],
+    $_SERVER['HTTP_HOST'],
+    HTTPS,
+    true
+);
 session_start();
+
 
 $parameters = isset($_GET['url']) ? $_GET['url'] : '';
 

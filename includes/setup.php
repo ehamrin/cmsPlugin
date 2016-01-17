@@ -17,6 +17,20 @@ if (isset($_POST['submit'])) {
 
     try {
         $conn = Database::GetConnection();
+
+        $authentication = new \plugin\Authentication\model\UserModel();
+
+        $authentication->Install();
+        $user = new \plugin\Authentication\model\User($_POST['cms_username'], $_POST['cms_password']);
+        $authentication->Create($user);
+
+
+        $settings = new \plugin\Settings\model\SettingModel();
+
+        $settings->Install();
+        $setting = new \plugin\Settings\model\Setting("page-site-title", $_POST['title'], "The name of your website");
+        $settings->Save($setting);
+
     } catch (\Exception $e) {
         debug($e->getMessage());
         unlink($my_file);

@@ -10,42 +10,31 @@ namespace plugin\Page;
  */
 
 
-class Page implements \IPlugin, \plugin\Admin\IAdminPanel
+class Page extends \plugin\AbstractPlugin
 {
     private $model;
     private $view;
-    private $adminController;
-    private $publicController;
+    protected $AdminController;
+    protected $PublicController;
 
     public function __construct(\Application $application){
-        $this->application = $application;
+        parent::__construct($application);
         $this->model = new model\PageModel();
         $this->view = new view\Page($this->application, $this->model);
 
-        $this->adminController = new controller\AdminPageController($this->application, $this->model, $this->view);
-        $this->publicController = new controller\PublicPageController($this->application, $this->model, $this->view);
+        $this->AdminController = new controller\AdminController($this->application, $this->model, $this->view);
+        $this->PublicController = new controller\PublicController($this->application, $this->model, $this->view);
     }
 
-    function Init($method="Index", ...$params){
-        if(!method_exists($this, $method) && $this->HookRootAccess($method)){
-            return $this->publicController->ViewCMS(strtolower($method), ...$params);
-        }elseif(method_exists($this->publicController, $method)){
-            return $this->publicController->{$method}(...$params);
-        }
-        return false;
-    }
+    function Init($controller, $method="Index", ...$params){
+        $parent = parent::Init($controller, $method, ...$params);
 
-    public function AdminPanelInit($method = "Index", ...$params)
-    {
-        if(method_exists($this->adminController, $method)) {
-            return $this->adminController->{$method}(...$params);
+        if($parent == false && $this->HookRootAccess($method)){
+
+            $parent = $this->PublicController->ViewCMS(strtolower($method), ...$params);
         }
 
-        return false;
-    }
-
-    public function Index(...$params){
-        return 'PageIndex';
+        return $parent;
     }
 
     public function Install(){
@@ -53,11 +42,11 @@ class Page implements \IPlugin, \plugin\Admin\IAdminPanel
     }
 
     public function UnInstall(){
-        $this->model->Uninstall();
+        $this->RemoveTable('page');;
     }
 
     public function IsInstalled(){
-        return $this->model->IsInstalled();
+        return $this->TableExists('page');
     }
 
 

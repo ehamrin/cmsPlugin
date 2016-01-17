@@ -10,64 +10,28 @@ namespace plugin\Settings;
  * @Icon  fa-cogs
  */
 
-class Settings implements \IPlugin, \plugin\admin\IAdminPanel
+class Settings extends \plugin\AbstractPlugin
 {
 
-    private $application;
-    private $pluginSettings = null;
-
     public function __construct(\Application $application){
-        $this->application = $application;
+        parent::__construct($application);
         $this->model = new model\SettingModel();
         $this->view = new view\Setting($this->application, $this->model);
+        $this->AdminController = new controller\AdminController($application, $this->model, $this->view);
     }
 
-
-    function Init($method="Index", ...$params){
-        return $this->AdminIndex();
-    }
-
-    public function Index(...$params)
+    public function Install()
     {
-        return "Settings index";
+        $this->model->Install();
     }
 
-    public function AdminPanelInit($method = "Index", ...$params)
+    public function IsInstalled()
     {
-        $method = 'Admin'.$method;
-
-        if(method_exists($this, $method)) {
-            return $this->{$method}(...$params);
-        }
-        return false;
+        return $this->TableExists('setting');
     }
-
-    public function AdminIndex(...$params)
+    public function Uninstall()
     {
-        if($this->view->WasSubmitted()){
-            $this->model->Save(...$this->view->GetSettings());
-            $this->view->EditSuccess();
-        }
-
-        return $this->view->ViewSettings($this->GetPluginSettings());
-    }
-
-
-    public function Install(){
-        //Setup table
-    }
-
-    public function UnInstall(){
-        //Drop table
-    }
-
-    public function IsInstalled(){
-        //Setup table
-        return true;
-    }
-
-    private function GetPluginSettings(){
-        return $this->pluginSettings ?? $this->pluginSettings = $this->application->InvokeEvent('PluginSettings');
+        $this->RemoveTable('setting');
     }
 
     /*
@@ -76,19 +40,18 @@ class Settings implements \IPlugin, \plugin\admin\IAdminPanel
      * ------------------------------------------------------
      */
 
-    /*
-       public function HookAdminItems{
+   public function HookAdminItems(){
 
-            return array(
-                new \NavigationItem(
-                    'Settings',
-                    'setting',
-                    array(),
-                    'manage-setting',
-                    'fa-cogs'
-                )
-            );
-    }*/
+        return array(
+            new \NavigationItem(
+                'Settings',
+                'setting',
+                array(),
+                'manage-setting',
+                'fa-cogs'
+            )
+        );
+    }
 
     public function HookUserPermissions(){
         return array(new \plugin\Authentication\model\Permission('Manage settings', 'manage-settings'));

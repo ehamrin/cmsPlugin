@@ -120,21 +120,4 @@ INSERT INTO `page` (`name`, `slug`, `content`, `template`, `module`) VALUES
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
         ");
     }
-
-    public function Uninstall(){
-        $this->conn->exec("
-          DROP TABLE IF EXISTS `page`
-        ");
-    }
-
-    public function IsInstalled(){
-        try {
-            $result = $this->conn->query("SELECT 1 FROM `page` LIMIT 1");
-        } catch (\Exception $e) {
-            return FALSE;
-        }
-
-        // Result is either boolean FALSE (no table found) or PDOStatement Object (table found)
-        return $result !== FALSE;
-    }
 }

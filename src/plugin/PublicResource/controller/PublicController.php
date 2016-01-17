@@ -5,14 +5,12 @@ namespace plugin\PublicResource\controller;
 use plugin\PublicResource\model;
 use plugin\PublicResource\view;
 
-class PublicResourceController
+class PublicController
 {
     private static $cache_life = 5; //Minutes
 
-    public function __construct(\Application $application, model\PublicResourceModel $model, view\PublicResourceView $view){
+    public function __construct(\Application $application){
         $this->application = $application;
-        $this->view = $view;
-        $this->model = $model;
     }
 
     public function Css( ...$args){

@@ -9,27 +9,25 @@ namespace plugin\Admin;
  * @Version v0.5
  */
 
-class Admin implements \IPlugin
+class Admin extends \plugin\AbstractPlugin
 {
-    private $application;
-
     public function __construct(\Application $application){
-        $this->application = $application;
+        parent::__construct($application);
         $this->view = new view\Admin($this->application);
     }
 
-    function Init($method="Index", ...$params){
+    function Init($controller, $method="Index", ...$params){
+
+        if(!$this->application->IsAuthenticated()){
+            $login= $this->application->GetPlugin('Authentication')->Init('Public', 'Login');
+            if($login !== true){
+                return $login;
+            }
+        }
 
         if($method === 'Admin'){
             $method = array_shift($params);
             $method = $method === null ? 'Index' : $method;
-        }
-
-        if(!$this->application->IsAuthenticated()){
-            $login= $this->application->GetPlugin('Authentication')->Init('Login');
-            if($login !== true){
-                return $login;
-            }
         }
 
         if(method_exists($this, $method)){
@@ -44,9 +42,7 @@ class Admin implements \IPlugin
                     /* @var $navitem \NavigationItem */
                     if($method == $navitem->GetLink()){
                         $instance = $event->GetHookListener();
-                        if($instance instanceof IAdminPanel){
-                            return $this->view->Render($instance->AdminPanelInit(...$params));
-                        }
+                        return $this->view->Render($instance->Init("Admin", ...$params));
                     }
                 }
 
@@ -61,7 +57,7 @@ class Admin implements \IPlugin
     }
 
     public function Logout(...$params){
-        $login= $this->application->GetPlugin('Authentication')->Init('Logout');
+        $this->application->GetPlugin('Authentication')->Init('Public', 'Logout');
         $this->view->GoToIndex();
     }
 
@@ -71,23 +67,6 @@ class Admin implements \IPlugin
      * ------------------------------------------------------
      */
     public function HookRootAccess($method){
-        if(strtolower($method) == 'admin'){
-            return true;
-        }
-
-        return false;
-
+        return (strtolower($method) == 'admin');
     }
-
-    public function Install(){
-    }
-
-    public function UnInstall(){
-    }
-
-    public function IsInstalled(){
-        return true;
-    }
-
-
 }

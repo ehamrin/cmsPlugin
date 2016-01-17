@@ -4,25 +4,15 @@
 namespace plugin\Sitemap;
 
 
-class Sitemap implements \IPlugin
+class Sitemap extends \plugin\AbstractPlugin
 {
-    private $application;
     private $file;
 
     public function __construct(\Application $application)
     {
+        parent::__construct($application);
         $this->file = APP_ROOT . 'public' . DIRECTORY_SEPARATOR . 'sitemap.xml';
-        $this->application = $application;
-    }
 
-    public function Init($method = "Index", ...$params)
-    {
-        // TODO: Implement Init() method.
-    }
-
-    public function Index(...$params)
-    {
-        // TODO: Implement Index() method.
     }
 
     public function Install()

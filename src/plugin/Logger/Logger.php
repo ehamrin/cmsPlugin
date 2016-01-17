@@ -9,13 +9,13 @@ namespace plugin\Logger;
  * @Version v0.5
  */
 
-class Logger implements \IPlugin, \plugin\admin\IAdminPanel
+class Logger extends \plugin\AbstractPlugin
 {
     public function __construct(\Application $application){
-        $this->application = $application;
+        parent::__construct($application);
         $this->model = new model\LoggerModel();
         $this->view = new view\LoggerView($this->model);
-        $this->adminController = new controller\AdminLoggerController($this->application, $this->model, $this->view);
+        $this->AdminController = new controller\AdminController($this->application, $this->model, $this->view);
 
     }
 
@@ -31,24 +31,6 @@ class Logger implements \IPlugin, \plugin\admin\IAdminPanel
         return $this->model->IsInstalled();
     }
 
-    public function Init($method = "Index", ...$params)
-    {
-        // TODO: Implement Init() method.
-    }
-
-    public function Index(...$params)
-    {
-        // TODO: Implement Index() method.
-    }
-
-    public function AdminPanelInit($method = "Index", ...$params)
-    {
-        $method = str_replace('-', '', $method);
-        if(method_exists($this->adminController, $method)) {
-            return $this->adminController->{$method}(...$params);
-        }
-        return false;
-    }
 
     /*
      * ------------------------------------------------------

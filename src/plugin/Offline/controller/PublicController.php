@@ -1,12 +1,24 @@
+<?php
+
+
+namespace plugin\Offline\controller;
+
+
+class PublicController
+{
+    public function ServiceWorker(){
+        header("Content-Type: text/javascript");
+
+        return <<<JS
 importScripts('scripts/cache-polyfill.js');
 
-var CACHE_VERSION = '2016-01-08-13-14';
+var CACHE_VERSION = '2016-01-14-18-14';
 var CACHE_FILES = [
     './',
     '/scripts/scripts.min.js',
     '/css/styles.min.css',
     '/favicon.png',
-    '/offline.html'
+    '/offline'
 ];
 
 self.addEventListener('install', function (event) {
@@ -104,3 +116,7 @@ self.addEventListener('activate', function (event) {
         })
     )
 });
+JS;
+
+    }
+}

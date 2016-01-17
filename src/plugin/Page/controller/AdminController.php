@@ -6,7 +6,7 @@ use \plugin\Page\model;
 use \plugin\Page\view;
 
 
-class AdminPageController
+class AdminController
 {
     public function __construct(\Application $application, model\PageModel $model, view\Page $view){
         $this->application = $application;

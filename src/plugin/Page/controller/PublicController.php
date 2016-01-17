@@ -4,7 +4,7 @@ namespace plugin\Page\Controller;
 use \plugin\Page\model;
 use \plugin\Page\view;
 
-class PublicPageController
+class PublicController
 {
 
     public function __construct(\Application $application, model\PageModel $model, view\Page $view){
@@ -16,12 +16,11 @@ class PublicPageController
 
     public function ViewCMS($id = "", ...$params)
     {
-        try{
-            $this->application->InvokeEvent('NewVisitor');
-            $page = $this->model->FindByURL($id);
-            return $this->view->RenderCMS($page, ...$params);
-        }catch(\Exception $e){
-            return false;
-        }
+
+        $this->application->InvokeEvent('NewVisitor');
+        $page = $this->model->FindByURL($id);
+
+        return $this->view->RenderCMS($page, ...$params);
+
     }
 }

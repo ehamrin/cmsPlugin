@@ -36,9 +36,10 @@ class Application
 
                     //Create a new instance of the class
                     $instance = $this->GetPlugin($name);
-                    if ($reflectMethod->invoke($instance, $action)) {
 
-                        $content = $instance->Init($action, ...$url);
+
+                    if ($reflectMethod->invoke($instance, $action)) {
+                        $content = $instance->Init('Public', $action, ...$url);
                     }
                 }
             }
@@ -136,7 +137,16 @@ class Application
     }
 
     public function GetConstantPlugins(){
-        return array('Admin', 'Authentication', 'PluginHandler', 'Settings', 'Logger', 'Sitemap', 'Page', 'PublicResource');
+        return array(
+            'Admin',
+            'Authentication',
+            'PluginHandler',
+            'Settings',
+            'Logger',
+            'Sitemap',
+            'Page',
+            'PublicResource'
+        );
     }
 
     public function Remove($plugin){

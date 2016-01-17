@@ -19,6 +19,7 @@ abstract class AbstractView
 
         ob_start();
         include $this->getDir() . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . $name . '.php';
+
         return ob_get_clean();
     }
 }

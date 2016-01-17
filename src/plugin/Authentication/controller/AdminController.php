@@ -6,16 +6,15 @@ namespace plugin\Authentication\controller;
 use \plugin\Authentication\model;
 use \plugin\Authentication\view;
 
-class AdminAuthenticationController
+class AdminController
 {
 
-    public function __construct(\Application $application, model\UserModel $model, view\User $view){
-        $this->application = $application;
-        $this->model = $model;
-        $this->view = $view;
+    public function __construct(\Application $application){
+        $this->model = new model\UserModel();
+        $this->view = new view\User($application, $this->model);
     }
 
-    public function Index(...$params)
+    public function Index()
     {
         return $this->view->AdminList();
     }
@@ -41,9 +40,9 @@ class AdminAuthenticationController
         return $this->view->Edit($id);
     }
 
-    public function View($id)
+    public function View(\string $id)
     {
-        if(is_string($id) && $id != ""){
+        if($id != ""){
             $this->model->FindByID($id);
         }
         return "User view";
