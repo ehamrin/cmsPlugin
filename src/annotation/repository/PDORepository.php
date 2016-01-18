@@ -424,7 +424,7 @@ class PDORepository extends AnnotationRepository implements IRepository
     /**
      * @comment Determines if the table needs to be created or updated
      */
-    private function checkTable()
+    public function checkTable()
     {
         if ($this->tableExists($this->tableName)) {
             $this->updateTable();

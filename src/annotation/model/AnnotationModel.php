@@ -6,7 +6,7 @@ use annotation\DocBlockReader;
 
 abstract class AnnotationModel implements IModel
 {
-    private $_modelErrors = array();
+    protected $_modelErrors = array();
 
     public function isValid(array $_repositoryList = null){
 
