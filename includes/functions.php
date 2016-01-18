@@ -77,7 +77,7 @@ function error_handler($errno, $errstr, $errfile, $errline) {
             break;
     }
 
-    $logger = new \plugin\Logger\model\LoggerModel();
+    $logger = new \app\Logger\model\LoggerModel();
     if($logger->IsInstalled()){
         $logger->logException($exception);
     }
