@@ -139,31 +139,6 @@ header h1{
     text-align: center;
 }
 
-.slider {
-    width: 100%;
-    height: 100%;
-    min-height: 100%;
-    position: relative;
-}
-
-
-.textslider-inner {
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-}
-
-.slide,
-.textslider .slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-}
-
 .full-widget{
     height: 200px;
     padding: 50px;
