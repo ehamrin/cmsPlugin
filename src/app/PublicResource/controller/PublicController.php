@@ -25,6 +25,31 @@ class PublicController
         return $this->GetFile("application/json", 10, "public/json", ...$args);
     }
 
+    public function Image($plugin, $filename){
+        $parts  = explode('.', $filename);
+
+        switch(array_pop($parts)){
+            case 'jpg':
+            case 'jpeg':
+            case 'JPG':
+            case 'JPEG':
+                $contentType = "image/jpeg";
+                break;
+            case 'png':
+            case 'PNG':
+                $contentType = "image/png";
+                break;
+            case 'gif':
+            case 'GIF':
+                $contentType = "image/gif";
+                break;
+            default:
+                return false;
+        }
+
+        return $this->GetFile($contentType, 1440, "public/image", $plugin, $filename);
+    }
+
     private function GetFile($contentType, $cacheLife, $directory, $plugin, $filename){
         $cacheDir = \Application::$pluginDirectory;
         $file = $cacheDir. "$plugin/$directory/$filename";
