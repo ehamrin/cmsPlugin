@@ -4,6 +4,8 @@
 class Application
 {
     private static $pluginNamespace = 'plugin';
+    private static $appNamespace = 'app';
+    public static $appDirectory = APP_ROOT . 'src/app/';
     public static $pluginDirectory = APP_ROOT . 'src/plugin/';
     private static $widgetDirectory = APP_ROOT . 'src/widget/';
 
@@ -61,16 +63,26 @@ class Application
     }
 
     private function BindPlugins(){
-        $plugins = scandir(self::$pluginDirectory);
+        $appPlugins = scandir(self::$appDirectory);
 
         //Remove parent directory "." and ".."
-        array_shift($plugins);
-        array_shift($plugins);
+        array_shift($appPlugins);
+        array_shift($appPlugins);
+
+        $userPlugins = scandir(self::$pluginDirectory);
+
+        //Remove parent directory "." and ".."
+        array_shift($userPlugins);
+        array_shift($userPlugins);
+
+        $plugins = array_merge($appPlugins, $userPlugins);
 
         foreach($plugins as $plugin) {
             try{
-                $pluginFacade = $this->CreatePluginFacade($plugin);
-                $this->plugins[$plugin] = $pluginFacade;
+                if($plugin != "__default") {
+                    $pluginFacade = $this->CreatePluginFacade($plugin);
+                    $this->plugins[$plugin] = $pluginFacade;
+                }
             }catch(\Exception $e){
                 //It's not a valid plugin
                 // TODO Show exception message
@@ -183,7 +195,7 @@ class Application
     public function IsAuthenticated() : \bool
     {
         if($this->PluginExists('Authentication')){
-            return \plugin\Authentication\model\UserModel::IsAuthenticated();
+            return \app\Authentication\model\UserModel::IsAuthenticated();
         }
 
         return true;
@@ -192,7 +204,7 @@ class Application
     public function GetUser()
     {
         if($this->PluginExists('Authentication') && $this->IsAuthenticated()){
-            return \plugin\Authentication\model\UserModel::GetLoggedInUser();
+            return \app\Authentication\model\UserModel::GetLoggedInUser();
         }
         return false;
     }
@@ -243,6 +255,9 @@ class Application
     public function CreatePluginFacade($plugin){
         if(is_file(self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php')){
             $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;
+            return new PluginFacade($pluginClassName);
+        }elseif(is_file(self::$appDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php')){
+            $pluginClassName = '\\' . self::$appNamespace . '\\' . $plugin . '\\' . $plugin;
             return new PluginFacade($pluginClassName);
         }
         throw new Exception("The plugin file does not exist!");

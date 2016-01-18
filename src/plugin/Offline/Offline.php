@@ -12,7 +12,7 @@ namespace plugin\Offline;
  */
 
 
-class Offline  extends \plugin\AbstractPlugin
+class Offline  extends \app\AbstractPlugin
 {
 
     public function HookRootAccess($method){
