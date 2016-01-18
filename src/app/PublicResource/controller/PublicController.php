@@ -2,8 +2,7 @@
 
 
 namespace app\PublicResource\controller;
-use app\PublicResource\model;
-use app\PublicResource\view;
+
 
 class PublicController
 {

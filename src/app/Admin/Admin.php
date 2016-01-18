@@ -21,6 +21,7 @@ class Admin extends \app\AbstractPlugin
         if(!$this->application->IsAuthenticated()){
             $login= $this->application->GetPlugin('Authentication')->Init('Public', 'Login');
             if($login !== true){
+                header("HTTP/1.1 401 Unauthorized");
                 return $login;
             }
         }

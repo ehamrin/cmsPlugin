@@ -6,24 +6,27 @@ use annotation\repository\PDORepository;
 use plugin\Slider\model\Slide;
 use plugin\Slider\view\Slider;
 
-class AdminController
+class AdminController  extends \app\Admin\AbstractAdminController
 {
     private $view;
 
     public function __construct(\Application $application, PDORepository $repository, Slider $view)
     {
-        $this->application = $application;
+        parent::__construct($application);
         $this->view = $view;
         $this->repository = $repository;
     }
 
     public function Index()
     {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
+
         return $this->view->Index($this->repository->findAll());
     }
 
     public function Create()
     {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
         $slide = new Slide();
 
         if($this->view->isPost() &&
@@ -40,6 +43,8 @@ class AdminController
 
     public function Edit($id)
     {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
+
         $slide = $this->repository->find($id);
         /* @var $slide Slide */
 
@@ -64,6 +69,8 @@ class AdminController
 
     public function Delete($id)
     {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
+
         $slide = $this->repository->find($id);
         /* @var $slide Slide */
 

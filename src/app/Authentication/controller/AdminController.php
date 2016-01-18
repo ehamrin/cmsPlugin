@@ -6,21 +6,26 @@ namespace app\Authentication\controller;
 use \app\Authentication\model;
 use \app\Authentication\view;
 
-class AdminController
+class AdminController extends \app\Admin\AbstractAdminController
 {
 
     public function __construct(\Application $application){
+        parent::__construct($application);
         $this->model = new model\UserModel();
         $this->view = new view\User($application, $this->model);
     }
 
     public function Index()
     {
+        $this->AuthorizeOrGoToAdmin("manage-user");
+
         return $this->view->AdminList();
     }
 
     public function Add()
     {
+        $this->AuthorizeOrGoToAdmin("manage-user");
+
         if($this->view->UserSubmittedAddForm()){
             $this->model->Create($this->view->GetNewUser());
             $this->view->AddSuccess();
@@ -30,6 +35,8 @@ class AdminController
 
     public function Edit(\int $id)
     {
+        $this->AuthorizeOrGoToAdmin("manage-user");
+
         if($this->view->UserSubmittedEditForm()){
             $this->model->Update($this->view->GetUpdatedUser($id));
             $this->view->EditSuccess();
@@ -40,16 +47,10 @@ class AdminController
         return $this->view->Edit($id);
     }
 
-    public function View(\string $id)
-    {
-        if($id != ""){
-            $this->model->FindByID($id);
-        }
-        return "User view";
-    }
-
     public function Delete($id)
     {
+        $this->AuthorizeOrGoToAdmin("manage-user");
+
         $this->model->Delete($id);
         $this->view->GoToIndex();
     }

@@ -43,4 +43,8 @@ class Authentication extends \app\AbstractPlugin
             new \NavigationItem('Users', 'user', array(new \NavigationItem('Add user', 'user/add', array(), 'manage-user')), 'manage-users',  'fa-users')
         );
     }
+
+    public function HookUserPermissions(){
+        return array(new \app\Authentication\model\Permission('Manage users', 'manage-user'));
+    }
 }

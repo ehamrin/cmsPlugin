@@ -4,30 +4,32 @@
 namespace app\Logger\controller;
 
 
-class AdminController
+class AdminController extends \app\Admin\AbstractAdminController
 {
     public function __construct($application, $model, $view)
     {
-        $this->application = $application;
+        parent::__construct($application);
         $this->model = $model;
         $this->view = $view;
     }
 
     public function Index(){
+        $this->AuthorizeOrGoToAdmin("view-error-log");
         return $this->Error();
     }
 
     public function Error(){
+        $this->AuthorizeOrGoToAdmin("view-error-log");
         return $this->view->ViewAllLogs();
     }
 
     public function Visitor(){
-        //return $this->view->ViewAllVisitors();
+        $this->AuthorizeOrGoToAdmin("view-error-log");
         return $this->view->ViewAllVisitorSummary();
     }
 
     public function VisitorVerbose(){
-        //return $this->view->ViewAllVisitors();
+        $this->AuthorizeOrGoToAdmin("view-error-log");
         return $this->view->ViewAllVisitors();
     }
 

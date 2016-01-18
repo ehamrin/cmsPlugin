@@ -1,6 +1,7 @@
 <?php
 
 namespace app\PluginHandler;
+use app\Authentication\model\Permission;
 
 /**
  * @Name Plugin Manager
@@ -46,5 +47,9 @@ class PluginHandler extends \app\AbstractPlugin
 
     public function HookAdminItems(){
         return array(new \NavigationItem('Manage Plugins', 'plugin', array(), 'manage-plugin', 'fa-puzzle-piece'));
+    }
+
+    public function HookUserPermissions(){
+        return array(new Permission('Manage plugins', 'manage-plugin'));
     }
 }

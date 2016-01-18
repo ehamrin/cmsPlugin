@@ -5,17 +5,20 @@ namespace app\PluginHandler\controller;
 use app\PluginHandler\model;
 use app\PluginHandler\view;
 
-class AdminController
+class AdminController extends \app\Admin\AbstractAdminController
 {
 
     public function __construct(\Application $application, model\PluginHandlerModel $model)
     {
-        $this->application = $application;
+        parent::__construct($application);
         $this->model = $model;
         $this->view = new view\PluginHandler($this->model);
     }
 
     public function Index(...$params){
+
+        $this->AuthorizeOrGoToAdmin("manage-plugin");
+
         if($this->view->WasSubmitted()){
             $this->model->Save($this->view->GetData());
 

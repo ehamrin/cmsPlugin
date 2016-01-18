@@ -53,5 +53,6 @@ class Sitemap extends \app\AbstractPlugin
         $data .= '</urlset>';
         $handle = fopen($this->file, 'w');
         fwrite($handle, $data);
+        chmod($this->file, 775);
     }
 }

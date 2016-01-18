@@ -6,6 +6,45 @@ namespace plugin\Offline\controller;
 
 class PublicController
 {
+    public function Offline()
+    {
+        return <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Offline</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,  maximum-scale=1.0, user-scalable=false">
+    <style>
+        html, body{
+            height: 100%;
+            min-height: 100%;
+        }
+        body{
+            padding: 30px;
+            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#627d4d+0,1f3b08+100;Olive+3D */
+            background: #627d4d; /* Old browsers */
+            background: -moz-linear-gradient(top,  #627d4d 0%, #1f3b08 100%); /* FF3.6-15 */
+            background: -webkit-linear-gradient(top,  #627d4d 0%,#1f3b08 100%); /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to bottom,  #627d4d 0%,#1f3b08 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08',GradientType=0 ); /* IE6-9 */
+        }
+        h1{margin-top: 40px;}
+        h1,p {
+             color:#fff;
+             text-align: center;
+             font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sorry, you appear to be offline!</h1>
+    <p>That means we can only display content you've seen when you had an internet connection :(</p>
+</body>
+</html>
+HTML;
+
+    }
     public function ServiceWorker(){
         header("Content-Type: text/javascript");
 
@@ -87,7 +126,7 @@ function requestBackend(event, refresh){
         if(!refresh){
             //show a generic fallback, but only if user requested text/html and we're not updating cache in background
             if (request.headers.get('accept').includes('text/html')) {
-                return caches.match('/offline.html');
+                return caches.match('/offline');
             }
         }
     })
