@@ -1,6 +1,7 @@
 <?php
 
 namespace plugin\Slider;
+use annotation\repository\PDORepositoryFactory;
 
 /**
  * @Name Image slider
@@ -11,9 +12,15 @@ namespace plugin\Slider;
 
 class Slider extends \app\AbstractPlugin
 {
+    private $view;
+    protected $AdminController;
+    private $repository;
+
     public function __construct(\Application $application){
         parent::__construct($application);
-        $this->view = new view\Slider();
+        $this->repository = PDORepositoryFactory::get("\\plugin\\Slider\\model\\Slide", \Database::GetConnection());
+        $this->view = new view\Slider($this->application);
+        $this->AdminController = new controller\AdminController($this->application, $this->repository, $this->view);
     }
 
 
@@ -24,7 +31,7 @@ class Slider extends \app\AbstractPlugin
      */
 
     public function HookPageHeaderHTML(\app\Page\model\Page $page){
-        return $this->view->RenderPageWidget();
+        return $this->view->RenderPageWidget($this->repository->findAll());
     }
 
     public function HookAdminItems(){
@@ -45,5 +52,20 @@ class Slider extends \app\AbstractPlugin
 
     public function HookPluginSettings(){
         return array(new \app\Settings\model\Setting('slider-duration', '5', 'Seconds to display each slide'));
+    }
+
+    public function Install()
+    {
+        $this->repository->checkTable();
+    }
+
+    public function IsInstalled()
+    {
+        return $this->TableExists("slide");
+    }
+
+    public function Uninstall()
+    {
+        $this->repository->uninstall();
     }
 }
