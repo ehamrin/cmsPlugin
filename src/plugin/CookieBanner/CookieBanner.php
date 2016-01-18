@@ -13,6 +13,7 @@ namespace plugin\CookieBanner;
  * @Description Add a cookie disclaimer
  * @Author Erik Hamrin
  * @Icon  fa-bell
+ * @Version v1.0
  */
 
 use app\AbstractPlugin;
