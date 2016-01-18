@@ -64,6 +64,8 @@ class SettingModel
           CREATE TABLE IF NOT EXISTS `setting` (
   `name` varchar(100) COLLATE utf8_swedish_ci NOT NULL,
   `value` varchar(100) COLLATE utf8_swedish_ci NOT NULL,
+  `description` varchar(100) COLLATE utf8_swedish_ci NOT NULL DEFAULT '',
+  `type` varchar(100) COLLATE utf8_swedish_ci NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_swedish_ci;
         ");
     }
