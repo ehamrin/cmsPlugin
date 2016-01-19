@@ -47,7 +47,12 @@ class Sitemap extends \app\AbstractPlugin
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
         foreach($this->application->InvokeEvent("GenerateSitemap") as $event){
-            $data .= $event->GetData();
+            foreach($event->GetData() as $url){
+                $data .= '
+                <url>
+                    <loc>http' . ( HTTPS ? 's' : '') . '://' . $_SERVER['SERVER_NAME'] . '/' . $url . '</loc>
+                </url>';
+            }
         }
 
         $data .= '</urlset>';

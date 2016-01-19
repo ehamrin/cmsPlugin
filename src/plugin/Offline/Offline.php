@@ -18,4 +18,8 @@ class Offline  extends \app\AbstractPlugin
     public function HookRootAccess($method){
         return (strtolower($method) == 'serviceworker') || (strtolower($method) == 'offline');
     }
+
+    public function HookJSON($filename){
+        return $this->Init('Public', "DynamicJSON", $filename);
+    }
 }

@@ -93,16 +93,11 @@ HTML;
     }
 
     public function HookGenerateSitemap(){
-        $ret = '';
-        foreach($this->model->FetchAllSlugs() as $slug){
+        return $this->model->FetchAllSlugs();
+    }
 
-            $ret .= '
-            <url>
-                <loc>https://' . $_SERVER['SERVER_NAME'] . '/' . $slug . '</loc>
-            </url>';
-        }
-
-        return $ret;
+    public function HookOfflineInstantCache(){
+        return $this->model->FetchAllSlugs();
     }
 
 
