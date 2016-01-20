@@ -101,3 +101,16 @@ function get_dir($dir){
     return $files;
 }
 
+function setFlash($message, $type){
+    $messages = array_merge(getFlashMessage(), array('message' => $message, "type" => $type));
+    $_SESSION["FlashMessage"] = $messages;
+}
+
+function getFlashMessage(){
+    if(isset($_SESSION["FlashMessage"])){
+        return $_SESSION["FlashMessage"];
+    }
+
+    return array();
+}
+
