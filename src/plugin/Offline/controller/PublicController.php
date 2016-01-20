@@ -29,12 +29,13 @@ class PublicController
         }
         body{
             padding: 30px;
-            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#627d4d+0,1f3b08+100;Olive+3D */
-            background: #627d4d; /* Old browsers */
-            background: -moz-linear-gradient(top,  #627d4d 0%, #1f3b08 100%); /* FF3.6-15 */
-            background: -webkit-linear-gradient(top,  #627d4d 0%,#1f3b08 100%); /* Chrome10-25,Safari5.1-6 */
-            background: linear-gradient(to bottom,  #627d4d 0%,#1f3b08 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#627d4d', endColorstr='#1f3b08',GradientType=0 ); /* IE6-9 */
+            /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#606c88+0,3f4c6b+100;Grey+3D+%232 */
+            background: #606c88; /* Old browsers */
+            background: -moz-linear-gradient(top,  #606c88 0%, #3f4c6b 100%); /* FF3.6-15 */
+            background: -webkit-linear-gradient(top,  #606c88 0%,#3f4c6b 100%); /* Chrome10-25,Safari5.1-6 */
+            background: linear-gradient(to bottom,  #606c88 0%,#3f4c6b 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=0 ); /* IE6-9 */
+
         }
         h1{margin-top: 40px;}
         h1,p {
@@ -42,11 +43,16 @@ class PublicController
              text-align: center;
              font-family: Arial, sans-serif;
         }
+
+        a{
+            color: #f7f7f7;
+        }
     </style>
 </head>
 <body>
     <h1>Sorry, you appear to be offline!</h1>
     <p>That means we can only display content you've seen when you had an internet connection :(</p>
+    <p><a href="/" onClick="window.history.back()">Go back to where you came from</a> or <a href="/">go back to front page</a></p>
 </body>
 </html>
 HTML;
@@ -55,7 +61,7 @@ HTML;
     public function ServiceWorker(){
         header("Content-Type: text/javascript");
 
-        $staticFiles = array("'./'",
+        $staticFiles = array(
             "'/scripts/scripts.min.js'",
             "'/css/styles.min.css'",
             "'/favicon.png'",
@@ -65,17 +71,29 @@ HTML;
         foreach($this->application->InvokeEvent("OfflineInstantCache") as $event){
             foreach($event->GetData() as $url){
                 if(!in_array($url, $staticFiles)){
-                    $staticFiles[$url];
+                    $staticFiles[] = "'/$url'";
                 }
             }
         }
 
+
         $staticFiles = implode(',', $staticFiles);
+
+        $changed = "2016-01-19 18:14:00";
+
+        foreach($this->application->InvokeEvent("LastUpdated") as $event){
+            $try = $event->GetData();
+            if(strtotime($changed) < $try){
+                $changed = date('Y-m-d H:i:s');
+            }
+        }
+
+        $changed = str_replace(array(':', ' '), '-', $changed);
 
         return <<<JS
 importScripts('scripts/cache-polyfill.js');
 
-var CACHE_VERSION = '2016-01-14-18-14';
+var CACHE_VERSION = '$changed';
 var CACHE_FILES = [
     {$staticFiles}
 ];

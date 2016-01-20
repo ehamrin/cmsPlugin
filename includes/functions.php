@@ -102,7 +102,8 @@ function get_dir($dir){
 }
 
 function setFlash($message, $type){
-    $messages = array_merge(getFlashMessage(), array('message' => $message, "type" => $type));
+    $messages = getFlashMessage();
+    $messages[] = array('message' => $message, "type" => $type);
     $_SESSION["FlashMessage"] = $messages;
 }
 
@@ -128,7 +129,7 @@ function getHTMLFlashMessage(){
     }
 
     if(!empty($ret)){
-        $ret .= '<div id="flash_messages">' . $ret . '</div>';
+        $ret = '<div id="flash_messages">' . $ret . '</div>';
     }
 
     return $ret;

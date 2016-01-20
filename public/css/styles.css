@@ -192,58 +192,6 @@ header h1{
     background: #991b3c;
 }
 
-/*********************************
-        Flash messages
-*/
-#flash_messages {
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    right: 0;
-}
-
-.flash-message {
-    display: block;
-    position: relative;
-    padding: 15px;
-    text-align: center;
-}
-
-.flash-message.error {
-    background-color: #fa6f6f;
-    color: #700000;
-}
-
-.flash-message.success {
-    background-color: #acd593;
-    color: #097605;
-}
-
-.flash-message.warning {
-    background-color: #f5f6ba;
-    color: #878527;
-}
-
-.flash-message.alert {
-    background-color: #acddfa;
-    color: #186283;
-}
-
-.flash-message .close {
-    position: absolute;
-    top: 10px;
-    right: 50px;
-    padding: 5px;
-    text-decoration: none;
-    font-weight: bold;
-    background-color: #54525b;
-    color: white;
-    border-radius: 4px;
-    line-height: 15px;
-    font-size: 15px;
-}
-
 
 @media screen and (max-width: 768px) {
 

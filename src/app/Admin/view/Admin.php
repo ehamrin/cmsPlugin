@@ -52,6 +52,7 @@ class Admin
     }
 
     public function Render($body){
+        $message = getHTMLFlashMessage();
         return <<<HTML
 <!doctype html>
 
@@ -105,7 +106,7 @@ class Admin
 </head>
 
 <body>
-    <?= getHTMLFlashMessage(); ?>
+    {$message}
     <nav>
         <ul>
             {$this->GetNavItems()}
