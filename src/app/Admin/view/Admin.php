@@ -105,6 +105,7 @@ class Admin
 </head>
 
 <body>
+    <?= getHTMLFlashMessage(); ?>
     <nav>
         <ul>
             {$this->GetNavItems()}

@@ -19,6 +19,7 @@
 <?php endforeach; ?>
 </head>
 <body>
+    <?= getHTMLFlashMessage(); ?>
     <?= $headerHook; ?>
     <header>
         <div id="menu_open"></div>
