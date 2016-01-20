@@ -42,8 +42,17 @@ class Slide extends \annotation\model\AnnotationModel
      */
     private $created;
 
+    /**
+     * @Column
+     * @Required    ["You must choose an alignment"]
+     * @Default     ["center"]
+     */
+    private $alignment = "center";
+
     public function getName(){ return $this->name; }
     public function setName($name){ $this->name = $name; }
+    public function getAlignment(){ return $this->alignment; }
+    public function setAlignment($alignment){ $this->alignment = $alignment; }
     public function getFilename(){ return $this->filename; }
     public function getPublicFilename(){ return "/image/Slider/" . $this->filename; }
     public function getCreated(){ return $this->created; }

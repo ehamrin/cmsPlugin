@@ -19,7 +19,7 @@ class Slider
         /* @var $slideModels Slide[] */
         $slides = '';
         foreach($slideModels as $slide){
-            $slides .= '<div class="slide" style="background-image: url(\'' . $slide->getPublicFilename() . '\');"></div>' . PHP_EOL;
+            $slides .= '<div class="slide" style="background-image: url(\'' . $slide->getPublicFilename() . '\');background-position: center ' . $slide->getAlignment() . ';"></div>' . PHP_EOL;
         }
         return <<<HTML
     <div id="slider">
@@ -58,6 +58,22 @@ HTML;
                     </div>
                     <div class="form-group">
                         <input type="file" name="slide" />
+                        ' . $this->getModelError($slide, "filename") . '
+                    </div>
+                    <div class="form-group">
+                        <strong>Alignment</strong>
+                        <label for="alignment_left">
+                            Left:
+                            <input id="alignment_left" type="radio" name="alignment" value="left" ' . ($slide->getAlignment() == 'left' ? 'checked="checked"' : '') . '/>
+                        </label>
+                        <label for="alignment_center">
+                            Center:
+                            <input id="alignment_center" type="radio" name="alignment" value="center" ' . ($slide->getAlignment() == 'center' ? 'checked="checked"' : '') . '/>
+                        </label>
+                        <label for="alignment_right">
+                            Right:
+                            <input id="alignment_right" type="radio" name="alignment" value="right" ' . ($slide->getAlignment() == 'right' ? 'checked="checked"' : '') . '/>
+                        </label>
                         ' . $this->getModelError($slide, "filename") . '
                     </div>
                     <div class="form-group">

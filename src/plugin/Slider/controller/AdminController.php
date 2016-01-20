@@ -33,6 +33,7 @@ class AdminController  extends \app\Admin\AbstractAdminController
             $slide->uploadFile()
         ){
             $slide->setName($_POST["name"]);
+            $slide->setAlignment($_POST["alignment"]);
             if($this->repository->save($slide)) {
                 $this->view->GoToIndex();
             }
@@ -59,6 +60,8 @@ class AdminController  extends \app\Admin\AbstractAdminController
             }
 
             $slide->setName($_POST["name"]);
+            $slide->setAlignment($_POST["alignment"]);
+
             if($this->repository->save($slide)) {
                 $this->view->GoToIndex();
             }

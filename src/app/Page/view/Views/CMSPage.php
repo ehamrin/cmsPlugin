@@ -20,10 +20,13 @@
 </head>
 <body>
     <?= $headerHook; ?>
-    <nav>
-        <?= $this->RenderNav($page); ?>
-    </nav>
-    <header><h1><?=$page->GetName(); ?></h1></header>
+    <header>
+        <div id="menu_open"></div>
+        <nav>
+            <?= $this->RenderNav($page); ?>
+        </nav>
+        <h1><?=$page->GetName(); ?></h1>
+    </header>
     <main>
         <?php include('templates' . DIRECTORY_SEPARATOR . $page->GetTemplate() . '.php'); ?>
     </main>
