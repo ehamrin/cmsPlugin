@@ -283,6 +283,7 @@
 $('.slider').textSlider({
     auto_next: true,
     show_nav: false,
-    slide_duration: 5000,
+    slide_duration: 200,
+    pause_time: 5000,
     effect: 'fade'
 });

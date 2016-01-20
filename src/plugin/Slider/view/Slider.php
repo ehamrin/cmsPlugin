@@ -14,7 +14,7 @@ class Slider
 
     public function RenderPageWidget($slideModels){
 
-        $this->application->AddScriptDependency("/js/Slider/Slider.js");
+        $this->application->AddScriptDependency("/js/Slider/slide.js");
         $this->application->AddCSSDependency("/css/Slider/Slider.css");
         /* @var $slideModels Slide[] */
         $slides = '';
