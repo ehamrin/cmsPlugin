@@ -6,6 +6,13 @@ namespace plugin\Offline\controller;
 
 class PublicController
 {
+    private $application;
+
+    public function __construct(\Application $application)
+    {
+        $this->application = $application;
+    }
+
     public function Offline()
     {
         return <<<HTML
@@ -48,16 +55,29 @@ HTML;
     public function ServiceWorker(){
         header("Content-Type: text/javascript");
 
+        $staticFiles = array("'./'",
+            "'/scripts/scripts.min.js'",
+            "'/css/styles.min.css'",
+            "'/favicon.png'",
+            "'/offline'"
+        );
+
+        foreach($this->application->InvokeEvent("OfflineInstantCache") as $event){
+            foreach($event->GetData() as $url){
+                if(!in_array($url, $staticFiles)){
+                    $staticFiles[$url];
+                }
+            }
+        }
+
+        $staticFiles = implode(',', $staticFiles);
+
         return <<<JS
 importScripts('scripts/cache-polyfill.js');
 
 var CACHE_VERSION = '2016-01-14-18-14';
 var CACHE_FILES = [
-    './',
-    '/scripts/scripts.min.js',
-    '/css/styles.min.css',
-    '/favicon.png',
-    '/offline'
+    {$staticFiles}
 ];
 
 self.addEventListener('install', function (event) {
