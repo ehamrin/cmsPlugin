@@ -108,9 +108,29 @@ function setFlash($message, $type){
 
 function getFlashMessage(){
     if(isset($_SESSION["FlashMessage"])){
-        return $_SESSION["FlashMessage"];
+        $messages = $_SESSION["FlashMessage"];
+        unset($_SESSION["FlashMessage"]);
+        return $messages;
     }
 
     return array();
+}
+
+function getHTMLFlashMessage(){
+    $messages = getFlashMessage();
+    $ret = "";
+
+    foreach($messages as $message){
+        $ret .= '<div class="flash-message ' . $message["type"] . '">
+        <a href="" class="flash-close">x</a>
+        ' . $message["message"] . '
+    </div>';
+    }
+
+    if(!empty($ret)){
+        $ret .= '<div id="flash_messages">' . $ret . '</div>';
+    }
+
+    return $ret;
 }
 
