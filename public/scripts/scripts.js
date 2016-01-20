@@ -31,5 +31,11 @@ $(document).ready(function(){
     //User is on mobile and views/hides the menu
     $('#menu_open').click(function(e){
         $('body').toggleClass('active');
-    })
+    });
+
+    //Close flash messages
+    $('.flash-close').click(function (e) {
+        e.preventDefault();
+        $(e.target).parent().remove();
+    });
 });
