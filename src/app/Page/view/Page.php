@@ -88,6 +88,17 @@ class Page extends \app\AbstractView
     }
 
     public function RenderCMS(model\Page $page, ...$params){
+        $this->application->AddCSSDependency('/css/normalize.min.css');
+        $this->application->AddCSSDependency('/vendors/fancybox/jquery.fancybox.css');
+        $this->application->AddCSSDependency('/vendors/sweetalert.css');
+        $this->application->AddCSSDependency('/css/font-awesome.min.css');
+        $this->application->AddCSSDependency('/css/styles.min.css?v=1.1');
+
+        $this->application->AddScriptDependency("/scripts/jquery.js");
+        $this->application->AddScriptDependency("/vendors/fancybox/jquery.fancybox.pack.js");
+        $this->application->AddScriptDependency("/vendors/sweetalert.min.js");
+        $this->application->AddScriptDependency("/scripts/scripts.min.js");
+
         $headerHook = '';
         foreach ($this->application->InvokeEvent("PageHeaderHTML", $page) as $event) {
             $headerHook .= $event->GetData();

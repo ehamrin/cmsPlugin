@@ -266,20 +266,92 @@ class Application
     private $scripts = array();
 
     public function AddScriptDependency($script){
-        $this->scripts[$script] = $script;
+        if(!in_array($script, $this->scripts)) {
+            $this->scripts[] = $script;
+        }
     }
 
     public function GetScriptDependency(){
-        return $this->scripts;
+        return $this->getDynamicFile($this->scripts, 'scripts', 'js');
     }
 
     private $stylesheets = array();
 
     public function AddCSSDependency($stylesheet){
-        $this->stylesheets[$stylesheet] = $stylesheet;
+        if(!in_array($stylesheet, $this->stylesheets)){
+            $this->stylesheets[] = $stylesheet;
+        }
+
     }
 
     public function GetCSSDependency(){
-        return $this->stylesheets;
+        return $this->getDynamicFile($this->stylesheets, 'css', 'css');
+    }
+
+    private function getDynamicFile(array $collection, $folder, $extension)
+    {
+        if(DEBUG){
+            return $collection;
+        }
+
+        $this->checkCacheDirectory($folder);
+
+        $return = array();
+        $content = "";
+        $directory = "";
+
+        foreach ($collection as $file) {
+            $file = preg_replace('/\?.*/', '', $file);
+            if(is_file(APP_ROOT . "public/$file")){
+
+                $content .= file_get_contents(APP_ROOT . "public/$file");
+            }else{
+                $args = explode('/', trim($file, '/'));
+
+                switch($args[0]){
+                    case "js":
+                        $directory = "scripts";
+                        break;
+                    case "css":
+                        $directory = "css";
+                        break;
+                }
+
+                if(is_file(self::$appDirectory . "$args[1]/public/$directory/$args[2]")){
+                    $content .= file_get_contents(self::$appDirectory . "$args[1]/public/$directory/$args[2]");
+                }else if(is_file(self::$pluginDirectory . "$args[1]/public/$directory/$args[2]")){
+                    $content .= file_get_contents(self::$pluginDirectory . "$args[1]/public/$directory/$args[2]");
+                }else{
+                    $return[] = $file;
+                }
+            }
+        }
+
+        if($content != ""){
+            $name = strtolower(preg_replace('/[0-9_\/=]+/','',base64_encode(sha1($content)))) . ".$extension";
+            $publicPath = "/cache/$folder/";
+            $filePath = APP_ROOT . 'public' . $publicPath;
+
+            if(!is_file($filePath . $name)) {
+                $handle = fopen($filePath . $name, 'w');
+                fwrite($handle, $content);
+                chmod($filePath . $name, 0775);
+            }
+
+            $return[] = $publicPath . $name;
+
+        }
+        return $return;
+    }
+
+    private function checkCacheDirectory($folder)
+    {
+        if(!is_dir(APP_ROOT . 'public/cache/')){
+            mkdir(APP_ROOT . 'public/cache/');
+        }
+
+        if(!is_dir(APP_ROOT . "public/cache/$folder/")){
+            mkdir(APP_ROOT . "public/cache/$folder/");
+        }
     }
 }
