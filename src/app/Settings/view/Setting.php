@@ -7,7 +7,6 @@ use \app\Settings\model;
 
 class Setting extends AbstractView
 {
-    private $form;
     private $model;
     private $application;
     private $message = null;

@@ -1,7 +1,5 @@
 /* Starter CSS for Flyout Menu */
 
-
-
 nav,
 nav ul,
 nav ul li,
@@ -35,7 +33,6 @@ nav ul ul {
     position: absolute;
     top: 1px;
     left: 99%;
-    z-index: 598;
     width: 100%;
 }
 nav ul ul li {
@@ -64,37 +61,35 @@ nav ul a,
 nav ul a:link,
 nav ul a:visited {
     display: block;
-    color: #fff;
+    color: #2d2d2d;
     text-decoration: none;
     font-weight: 300;
 }
 nav > ul {
     float: none;
 }
-nav ul {
-    background: #6DA9BF;
-}
+
 nav > ul > li {
-    border-left: 3px solid #d7d8da;
+    border-left: 3px solid #5dc2f1;
 }
 nav > ul > li > a {
     padding: 10px 20px;
 }
 nav > ul > li:hover {
-    border-left: 3px solid #333333;
+    border-left: 3px solid #1f6377;
 
 }
-nav ul li:hover > a,
-nav ul li.current > a {
-    color: #fff;
+nav > ul > li:hover > a,
+nav > ul > li.current > a {
+    color: #2d2d2d;
     border-bottom: 0.08em solid rgba(0, 0, 0, 0.1);
 }
 nav > ul > li:hover {
-    background: #6DA9BF;
+    background: #f7f7f7;
 }
 /* Sub Menu */
-nav ul ul a:link,
-nav ul ul a:visited {
+nav ul ul li a:link,
+nav ul ul li a:visited{
     font-weight: 400;
     font-size: 14px;
 }
@@ -103,7 +98,10 @@ nav ul ul {
     background: none;
     border-left: 20px solid transparent;
 }
-nav ul ul a {
+nav ul ul a,
+nav ul ul a:link,
+nav ul ul a:visited{
+    color: #fff;
     padding: 8px 0;
     border-bottom: 1px solid #eeeeee;
 }

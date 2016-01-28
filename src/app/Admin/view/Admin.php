@@ -60,7 +60,7 @@ class Admin
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Administration</title>
+    <title>Administration  - {$this->application->Setting("page-site-title")->GetValue()}></title>
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/normalize.css">
@@ -107,12 +107,12 @@ class Admin
 
 <body>
     {$message}
+    <div id="menu_open"></div>
     <nav>
         <ul>
             {$this->GetNavItems()}
         </ul>
     </nav>
-    <header><h1>Welcome to the admin area</h1></header>
     <main>
         <div class="wrapper">
             {$body}

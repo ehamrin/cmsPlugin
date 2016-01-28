@@ -1,5 +1,5 @@
-<?php /* @var $user \plugin\Authentication\model\User */ ?>
-
+<?php /* @var $user \app\Authentication\model\User */ ?>
+<h1>Editing <?= $user->GetUsername() ?></h1>
 <form action="" method="POST" class="inline-1-2">
     <?= $this->message ?>
     <div class="form-group">

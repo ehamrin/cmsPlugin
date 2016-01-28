@@ -252,6 +252,18 @@ class Application
         }
     }
 
+    public function Settings(){
+
+        $model = new \app\Settings\model\SettingModel();
+        return $model->GetAll();
+    }
+
+    public function Setting($name){
+
+        $model = new \app\Settings\model\SettingModel();
+        return $model->Get($name);
+    }
+
     public function CreatePluginFacade($plugin){
         if(is_file(self::$pluginDirectory . $plugin . DIRECTORY_SEPARATOR . $plugin . '.php')){
             $pluginClassName = '\\' . self::$pluginNamespace . '\\' . $plugin . '\\' . $plugin;

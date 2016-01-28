@@ -1,4 +1,5 @@
 <h1>Error log</h1>
+<div class="table-wrapper">
 <table>
     <tr>
         <th>Date</th>
@@ -28,3 +29,4 @@
 
 <?php endforeach; ?>
 </table>
+</div>

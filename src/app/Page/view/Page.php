@@ -109,7 +109,8 @@ class Page extends \app\AbstractView
             $moduleHook .= $event->GetData();
         }
 
-        return $this->View('CMSPage', array('page' => $page, 'headerHook' => $headerHook, 'moduleHook' => $moduleHook));
+
+        return $this->View('CMSPage', array('page' => $page, 'headerHook' => $headerHook, 'moduleHook' => $moduleHook, 'settings' => $this->application->Settings()));
 
     }
 
@@ -131,14 +132,21 @@ class Page extends \app\AbstractView
     }
 
     public function Edit($pageID){
+        $html = '<h1>';
+        $title = 'Create new page';
+
         if($pageID > 0){
+
             $page = $this->model->FindByID($pageID);
+            $title = 'Editing ' . $page->GetName();
+
             $this->editForm->UpdateValue("title", $page->GetName());
             $this->editForm->UpdateValue("content", $page->GetContent());
             $this->editForm->UpdateValue("template", $page->GetTemplate());
             $this->editForm->UpdateValue("module", $page->GetModule());
         }
-        return $this->editForm->GetView();
+        $html .= $title . '</h1>' . $this->editForm->GetView();
+        return $html;
     }
 
     public function UserSubmitted(){

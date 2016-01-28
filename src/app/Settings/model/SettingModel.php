@@ -36,7 +36,7 @@ class SettingModel
         $stmt->execute();
 
         while($obj = $stmt->fetchObject()){
-            $ret[] = new Setting($obj->name, $obj->value, $obj->description);
+            $ret[$obj->name] = new Setting($obj->name, $obj->value, $obj->description);
         }
         return $ret;
     }

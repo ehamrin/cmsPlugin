@@ -30,6 +30,7 @@ class User extends \app\AbstractView
         }
 
         return <<<HTML
+        <h1>Viewing all users</h1>
     <table>
         <tr>
             <th>Username</th>

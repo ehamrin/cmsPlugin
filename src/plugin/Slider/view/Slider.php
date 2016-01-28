@@ -31,8 +31,8 @@ HTML;
     }
 
     public function Index($slides){
-        $ret = '<h1>Slider admin panel</h1>
-               <a href="/admin/slider/create">Create new slider image</a>
+        $ret = '<h1>Manage page slider</h1>
+       <div class="table-wrapper">
             <table>';
         foreach($slides as $slide){
             /* @var $slide Slide */
@@ -45,12 +45,14 @@ HTML;
                 </tr>
 ';
         }
-        $ret .= '</table>';
+        $ret .= '</div></table>';
         return $ret;
     }
 
     public function create(Slide $slide){
-        return '<form method="post" enctype="multipart/form-data">
+        $title = $slide->getId() ? "Edit {$slide->getName()}" : "Create new slide";
+        return '<h1>' . $title . '</h1>
+                <form method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <strong>Name</strong>
                         <input type="text" name="name" value="' . $slide->getName() . '"/>

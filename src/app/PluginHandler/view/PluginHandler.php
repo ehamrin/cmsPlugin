@@ -12,7 +12,8 @@ class PluginHandler
         $this->model = $model;
     }
     public function AdminList(\Application $application){
-        $ret = '<form action="" method="POST"><table><tr><th>Plugin Name</th><th>Active</th><th>Description</th><th>Version</th></tr>';
+        $ret = '<h1>Manage plugins</h1>
+            <div class="table-wrapper"><form action="" method="POST"><table><tr><th>Plugin Name</th><th>Active</th><th>Description</th><th>Version</th></tr>';
         $installed = $this->model->InstalledPlugins();
 
         foreach($this->model->GetAvailablePlugins() as $available => $facade){
@@ -34,7 +35,7 @@ class PluginHandler
             }
         }
 
-        return $ret . '</table><input type="hidden" name="placeholder" value="1"/><button type="submit" name="submit">Submit</button></form>';
+        return $ret . '</table></div><input type="hidden" name="placeholder" value="1"/><button type="submit" name="submit">Submit</button></form>';
     }
 
     public function WasSubmitted(){

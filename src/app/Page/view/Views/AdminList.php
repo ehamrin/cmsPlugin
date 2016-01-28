@@ -1,4 +1,7 @@
+<h1>Listing all pages</h1>
 <div class="inline-3-4">
+
+    <div class="table-wrapper">
     <table>
         <tr>
             <th>Page</th>
@@ -17,6 +20,7 @@
         </tr>
 <?php endforeach; ?>
     </table>
+    </div>
 </div>
 <?php if($this->application->GetUser() && $this->application->GetUser()->Can('manage-widget')): ?>
 <div class="inline-1-4">

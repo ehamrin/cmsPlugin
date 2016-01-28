@@ -39,7 +39,13 @@ class Slider extends \app\AbstractPlugin
             new \NavigationItem(
                 'Slider',
                 'slider',
-                array(),
+                array(new \NavigationItem(
+                    'Add slide',
+                    'slider/create',
+                    array(),
+                    'manage-slider',
+                    'fa-image'
+                )),
                 'manage-slider',
                 'fa-image'
             )

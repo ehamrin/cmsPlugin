@@ -1,5 +1,6 @@
 <h1>Visitor log</h1>
 <p>Total visitors: <?= count($logs); ?></p>
+<div class="table-wrapper">
 <table>
     <tr>
         <th>Date</th>
@@ -27,3 +28,4 @@
         </tr>
     <?php endforeach; ?>
 </table>
+</div>

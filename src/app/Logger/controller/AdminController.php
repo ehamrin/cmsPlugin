@@ -4,9 +4,11 @@
 namespace app\Logger\controller;
 
 
+use app\Logger\view\LoggerView;
+
 class AdminController extends \app\Admin\AbstractAdminController
 {
-    public function __construct($application, $model, $view)
+    public function __construct($application, $model, LoggerView $view)
     {
         parent::__construct($application);
         $this->model = $model;

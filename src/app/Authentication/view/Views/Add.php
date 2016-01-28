@@ -1,3 +1,4 @@
+<h1>Create new user</h1>
 <form action="" method="POST" class="inline-1-2">
     <?= $this->message ?>
     <div class="form-group">
