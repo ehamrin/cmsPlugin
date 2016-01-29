@@ -12,15 +12,14 @@ use annotation\repository\PDORepositoryFactory;
 
 class Slider extends \app\AbstractPlugin
 {
-    private $view;
     protected $AdminController;
     private $repository;
 
     public function __construct(\Application $application){
         parent::__construct($application);
         $this->repository = PDORepositoryFactory::get("\\plugin\\Slider\\model\\Slide", \Database::GetConnection());
-        $this->view = new view\Slider($this->application);
-        $this->AdminController = new controller\AdminController($this->application, $this->repository, $this->view);
+        $this->AdminController = new controller\AdminController($this->application, $this->repository);
+        $this->PublicController = new controller\PublicController($this->application, $this->repository);
     }
 
 
@@ -31,7 +30,7 @@ class Slider extends \app\AbstractPlugin
      */
 
     public function HookPageHeaderHTML(\app\Page\model\Page $page){
-        return $this->view->RenderPageWidget($this->repository->findAll());
+        return $this->Init('Public', 'Widget');
     }
 
     public function HookAdminItems(){

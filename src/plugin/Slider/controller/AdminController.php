@@ -5,16 +5,12 @@ namespace plugin\Slider\controller;
 use annotation\repository\PDORepository;
 use app\Admin\AbstractAdminController;
 use plugin\Slider\model\Slide;
-use plugin\Slider\view\Slider;
 
 class AdminController  extends AbstractAdminController
 {
-    private $view;
-
-    public function __construct(\Application $application, PDORepository $repository, Slider $view)
+    public function __construct(\Application $application, PDORepository $repository)
     {
         parent::__construct($application);
-        $this->view = $view;
         $this->repository = $repository;
     }
 
@@ -37,7 +33,7 @@ class AdminController  extends AbstractAdminController
             $slide->setName($_POST["name"]);
             $slide->setAlignment($_POST["alignment"]);
             if($this->repository->save($slide)) {
-                $this->view->GoToIndex();
+                $this->Redirect('/admin/slider');
             }
         }
 
@@ -48,7 +44,7 @@ class AdminController  extends AbstractAdminController
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
 
-        $slide = $this->repository->find($id) ?? $this->view->GoToIndex();
+        $slide = $this->repository->find($id) ?? $this->Redirect('/admin/slider');
         /* @var $slide Slide */
 
         if($this->requestMethod() == 'POST'){
@@ -77,6 +73,6 @@ class AdminController  extends AbstractAdminController
         $slide->removeFile();
         $this->repository->delete($slide);
 
-        $this->view->GoToIndex();
+        $this->Redirect('/admin/slider');
     }
 }
