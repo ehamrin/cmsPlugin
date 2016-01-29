@@ -30,80 +30,16 @@ class Slider
 HTML;
     }
 
-    public function Index($slides){
-        $ret = '<h1>Manage page slider</h1>
-       <div class="table-wrapper">
-            <table>';
-        foreach($slides as $slide){
-            /* @var $slide Slide */
-            $ret .= '<tr>
-                    <td>' . $slide->getName() . '</td>
-                    <td>' . $slide->getFilename() . '</td>
-                    <td>' . $slide->getCreated() . '</td>
-                    <td><a href="/admin/slider/edit/' . $slide->getId() . '"><i class="fa fa-pencil-square-o"></i></a></td>
-                    <td><a class="delete" href="/admin/slider/delete/' . $slide->getId() . '"><i class="fa fa-trash-o"></i></a></td>
-                </tr>
-';
-        }
-        $ret .= '</div></table>';
-        return $ret;
-    }
-
-    public function create(Slide $slide){
-        $title = $slide->getId() ? "Edit {$slide->getName()}" : "Create new slide";
-        return '<h1>' . $title . '</h1>
-                <form method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <strong>Name</strong>
-                        <input type="text" name="name" value="' . $slide->getName() . '"/>
-                        ' . $this->getModelError($slide, "name") . '
-                    </div>
-                    <div class="form-group">
-                        <input type="file" name="slide" />
-                        ' . $this->getModelError($slide, "filename") . '
-                    </div>
-                    <div class="form-group">
-                        <strong>Alignment</strong>
-                        <label for="alignment_left">
-                            Left:
-                            <input id="alignment_left" type="radio" name="alignment" value="left" ' . ($slide->getAlignment() == 'left' ? 'checked="checked"' : '') . '/>
-                        </label>
-                        <label for="alignment_center">
-                            Center:
-                            <input id="alignment_center" type="radio" name="alignment" value="center" ' . ($slide->getAlignment() == 'center' ? 'checked="checked"' : '') . '/>
-                        </label>
-                        <label for="alignment_right">
-                            Right:
-                            <input id="alignment_right" type="radio" name="alignment" value="right" ' . ($slide->getAlignment() == 'right' ? 'checked="checked"' : '') . '/>
-                        </label>
-                        ' . $this->getModelError($slide, "filename") . '
-                    </div>
-                    <div class="form-group">
-                        <button type="submit">Ladda upp</button>
-                    </div>
-                </form>
-                ';
-    }
-
-    private function getModelError(Slide $slide, $name){
-        if(!isset($slide->getModelError()[$name])){
-            return "";
-        }
-        $ret  = '<ul class="error-list">';
-        if(is_array($slide->getModelError()[$name])){
-            foreach($slide->getModelError()[$name] as $error){
-                $ret .= "<li>$error</li>";
-            }
-        }else{
-            $ret .= "<li>" . $slide->getModelError()[$name] . "</li>";
-        }
-
-        $ret .= '</ul>';
-        return $ret;
-    }
 
     public function hasFile(){
-        return isset($_FILES["slide"]) && !empty($_FILES["slide"]["name"]);
+        if(isset($_FILES) && is_array($_FILES)){
+            foreach ($_FILES as $name => $item) {
+                if(!empty($item["name"])){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public function isPost(){

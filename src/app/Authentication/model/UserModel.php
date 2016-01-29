@@ -75,7 +75,15 @@ class UserModel
     public function Create(User $user){
         $stmt = $this->conn->prepare("INSERT INTO user (username, password) VALUES(?,?)");
         $stmt->execute(array($user->GetUsername(), $user->GetPassword()));
-        return $this->conn->lastInsertId();
+
+        $id = $this->conn->lastInsertId();
+
+        foreach($user->GetPermissions() as $permission){
+            $stmt = $this->conn->prepare("INSERT INTO user_permission (user, permission) VALUES(?,?)");
+            $stmt->execute(array($id, $permission));
+        }
+
+        return $id;
     }
 
     public function Update(User $user){
