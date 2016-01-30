@@ -10,9 +10,13 @@ error_reporting(E_ALL);
 
 require_once APP_ROOT . 'includes/functions.php';
 
+if(is_file(APP_ROOT . 'vendor/autoload.php')){
+    require APP_ROOT . 'vendor/autoload.php';
+}
+
 $currentCookieParams = session_get_cookie_params();
 
-$lifetime=1200;
+$lifetime=0;
 $secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on';
 
 session_set_cookie_params(

@@ -222,6 +222,20 @@ class Application
         return $this->plugins[$plugin]->GetInstance();
     }
 
+    /**
+     * @return \ReflectionClass[]
+     */
+    public function GetActivePluginReflections()
+    {
+        $ret = array();
+        foreach ($this->plugins as $plugin) {
+            if($plugin->Exists()){
+                $ret[$plugin->GetPluginName()] = $plugin->GetReflection();
+            }
+        }
+        return $ret;
+    }
+
     public function GetWidget(\string $widget = null)
     {
         if($widget == null){

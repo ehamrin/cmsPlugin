@@ -14,8 +14,7 @@ class Logger extends \app\AbstractPlugin
     public function __construct(\Application $application){
         parent::__construct($application);
         $this->model = new model\LoggerModel();
-        $this->view = new view\LoggerView($this->model);
-        $this->AdminController = new controller\AdminController($this->application, $this->model, $this->view);
+        $this->AdminController = new controller\AdminController($this->application, $this->model);
 
     }
 

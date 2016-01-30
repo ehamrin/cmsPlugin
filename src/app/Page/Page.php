@@ -30,7 +30,6 @@ class Page extends \app\AbstractPlugin
         $parent = parent::Init($controller, $method, ...$params);
 
         if($parent == false && $this->HookRootAccess($method)){
-
             $parent = $this->PublicController->ViewCMS(strtolower($method), ...$params);
         }
 

@@ -45,6 +45,9 @@ class Authentication extends \app\AbstractPlugin
     }
 
     public function HookUserPermissions(){
-        return array(new \app\Authentication\model\Permission('Manage users', 'manage-user'));
+        return array(
+            new \app\Authentication\model\Permission('Manage users', 'manage-user'),
+            new \app\Authentication\model\Permission('Manage permissions', 'manage-permissions')
+        );
     }
 }

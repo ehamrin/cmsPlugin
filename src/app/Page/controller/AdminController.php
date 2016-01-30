@@ -38,7 +38,7 @@ class AdminController extends \app\Admin\AbstractAdminController
         return $this->view->Edit($id);
     }
 
-    public function Delete($id)
+    public function delete_Delete($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-pages");
 

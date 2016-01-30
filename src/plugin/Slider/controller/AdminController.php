@@ -3,87 +3,87 @@
 namespace plugin\Slider\controller;
 
 use annotation\repository\PDORepository;
+use app\Admin\AbstractAdminController;
 use plugin\Slider\model\Slide;
-use plugin\Slider\view\Slider;
 
-class AdminController  extends \app\Admin\AbstractAdminController
+class AdminController  extends AbstractAdminController
 {
-    private $view;
-
-    public function __construct(\Application $application, PDORepository $repository, Slider $view)
+    public function __construct(\Application $application, PDORepository $repository)
     {
         parent::__construct($application);
-        $this->view = $view;
         $this->repository = $repository;
     }
 
     public function Index()
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
+        $slides = $this->repository->findAll();
 
-        return $this->view->Index($this->repository->findAll());
+        return $this->View("admin.slider_index", compact('slides'));
     }
 
     public function Create()
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
         $slide = new Slide();
+        return $this->View("admin.slider_create", compact('slide'));
+    }
 
-        if($this->view->isPost() &&
-            $slide->uploadFile()
-        ){
+    public function post_Create()
+    {
+        $slide = new Slide();
+        if($slide->uploadFile()){
             $slide->setName($_POST["name"]);
             $slide->setAlignment($_POST["alignment"]);
             if($this->repository->save($slide)) {
-                $this->view->GoToIndex();
+                setFlash('Slider created!', 'success');
+                $this->Redirect('/admin/slider');
             }
         }
-
-        return $this->view->Create($slide);
+        setFlash('There was an error!', 'error');
+        return $this->View("admin.slider_create", compact('slide'));
     }
 
     public function Edit($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
-
-        $slide = $this->repository->find($id);
-        /* @var $slide Slide */
-
-        if($slide == null){
-            $this->view->GoToIndex();
-        }
-
-        if($this->view->isPost()
-        ){
-            if($this->view->hasFile()){
-                $slide->uploadFile();
-            }
-
-            $slide->setName($_POST["name"]);
-            $slide->setAlignment($_POST["alignment"]);
-
-            if($this->repository->save($slide)) {
-                $this->view->GoToIndex();
-            }
-        }
-
-        return $this->view->Create($slide);
+        $slide = $this->repository->find($id) ?? $this->Redirect('/admin/slider');
+        return $this->View("admin.slider_edit", compact('slide'));
     }
 
-    public function Delete($id)
+    public function put_Edit($id)
+    {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
+        $slide = $this->repository->find($id) ?? $this->Reload();
+        /* @var $slide Slide */
+
+        if($this->hasFile()){
+            $slide->uploadFile();
+        }
+
+        $slide->setName($_POST["name"]);
+        $slide->setAlignment($_POST["alignment"]);
+
+        if($this->repository->save($slide)) {
+            setFlash('Slider saved!', 'success');
+            $this->Redirect('/admin/slider');
+        }
+
+        setFlash('There was an error!', 'error');
+
+        return $this->View("admin.slider_edit", compact('slide'));
+    }
+
+    public function delete_Delete($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
 
-        $slide = $this->repository->find($id);
+        $slide = $this->repository->find($id) ?? $this->Redirect('/admin/slider');
         /* @var $slide Slide */
-
-        if($slide == null){
-            $this->view->GoToIndex();
-        }
 
         $slide->removeFile();
         $this->repository->delete($slide);
 
-        $this->view->GoToIndex();
+        $this->Redirect('/admin/slider');
     }
 }

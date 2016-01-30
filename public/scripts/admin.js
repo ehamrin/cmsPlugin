@@ -16,9 +16,13 @@ $(document).ready(function(){
         }, function (isConfirm) {
             if (isConfirm) {
                 var element = $(e.target).parent('a');
-                $.get(element.attr('href'), function( data ) {
-                    element.parentsUntil('tr').parent().remove();
-                    swal("Deleted!", "Your item has been deleted.", "success");
+
+                $.ajax({
+                    url: element.attr('href'),
+                    type: 'DELETE',
+                    success: function(data) {
+                        element.parentsUntil('tr').parent().remove();
+                    }
                 });
 
             } else {
@@ -37,7 +41,7 @@ $(document).ready(function(){
             confirmButtonColor: "#5dc2f1",
             confirmButtonText: "Yes!",
             cancelButtonText: "No!",
-            closeOnConfirm: false,
+            closeOnConfirm: true,
             closeOnCancel: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -48,21 +52,33 @@ $(document).ready(function(){
         });
     });
 
-    $('a.confirmed-add').each(function(index, element){
+    $('.flash-message.success').each(function(index, element){
         element = $(element);
+        element.find('a').remove();
         element.remove();
+
         swal({
-                title: "Good job!",
-                text: element.html(),
+                title: "Sweet!",
+                text: element.text(),
                 type: "success",
+                timer: 1500,
                 confirmButtonText: "Ok!"
-            },
-            function(){
-                window.location.href = element.attr("href");
             });
     });
 
+    $('.flash-message.error').each(function(index, element){
+        element = $(element);
+        element.find('a').remove();
+        element.remove();
 
+        swal({
+            title: "Sorry!",
+            text: element.text(),
+            type: "error",
+            timer: 2000,
+            confirmButtonText: "Ok!"
+        });
+    });
 
     $('.checkbox-submit').on('change', function(e){
         var target = $(e.target);

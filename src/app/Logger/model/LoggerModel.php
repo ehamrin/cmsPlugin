@@ -19,6 +19,7 @@ class LoggerModel
 
     public function logVisitor($username){
 
+
         $stmt = $this->conn->prepare("INSERT INTO visitor_logger (date, user, info, session) VALUES(?,?,?,?)");
         $stmt->execute(array(date('Y-m-d H:i:s'), $username, serialize($_SERVER), session_id()));
 

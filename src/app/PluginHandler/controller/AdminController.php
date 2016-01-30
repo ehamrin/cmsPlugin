@@ -12,32 +12,51 @@ class AdminController extends \app\Admin\AbstractAdminController
     {
         parent::__construct($application);
         $this->model = $model;
-        $this->view = new view\PluginHandler($this->model);
     }
 
     public function Index(...$params){
 
         $this->AuthorizeOrGoToAdmin("manage-plugin");
 
-        if($this->view->WasSubmitted()){
-            $this->model->Save($this->view->GetData());
+        $installedPlugin = $this->model->InstalledPlugins();
+        $availablePlugin = $this->model->GetAvailablePlugins();
+        $application = $this->application;
 
-            foreach($this->view->GetData() as $plugin => $action){
-                try{
-                    if($action == 'delete-data'){
-                        $this->application->GetPlugin($plugin)->Uninstall();
-                        $this->application->Remove($plugin);
-                    }elseif($action == 'Install'){
-                        $this->application->InstallPlugin($plugin);
-                    }
-                }catch(\Exception $e){
+        return $this->View('admin.plugin_index', compact('installedPlugin', 'availablePlugin', 'application'));
+    }
+
+    public function post_Index(...$params)
+    {
+        $this->model->Save($this->getPluginPostArray());
+
+        foreach($this->getPluginPostArray() as $plugin => $action){
+            try{
+                if($action == 'delete-data'){
+                    $this->application->GetPlugin($plugin)->Uninstall();
+                    $this->application->Remove($plugin);
+                }elseif($action == 'Install'){
+                    $this->application->InstallPlugin($plugin);
                 }
+            }catch(\Exception $e){
             }
-
-            $this->application->InvokeEvent('GenerateNewSitemap');
-
-            $this->view->Success();
         }
-        return $this->view->AdminList($this->application);
+
+        $this->application->InvokeEvent('GenerateNewSitemap');
+
+        setFlash('Plugins updated', 'success');
+        $this->Reload();
+    }
+
+    private function getPluginPostArray()
+    {
+        $ret = array();
+        foreach($_POST['plugin'] as $key => $plugin){
+            if(isset($plugin['value'])){
+                $ret[$key] = 'Install';
+            }else{
+                $ret[$key] = $plugin['action'];
+            }
+        }
+        return $ret;
     }
 }
