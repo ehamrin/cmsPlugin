@@ -4,11 +4,12 @@
 namespace app\Logger\controller;
 
 
+use app\Logger\model\LoggerModel;
 use app\Logger\view\LoggerView;
 
 class AdminController extends \app\Admin\AbstractAdminController
 {
-    public function __construct($application, $model, LoggerView $view)
+    public function __construct($application, LoggerModel $model, LoggerView $view)
     {
         parent::__construct($application);
         $this->model = $model;
@@ -16,23 +17,25 @@ class AdminController extends \app\Admin\AbstractAdminController
     }
 
     public function Index(){
-        $this->AuthorizeOrGoToAdmin("view-error-log");
         return $this->Error();
     }
 
     public function Error(){
         $this->AuthorizeOrGoToAdmin("view-error-log");
-        return $this->view->ViewAllLogs();
+        $logs = $this->model->fetchAllError();
+        return $this->View('admin.logger_error', compact('logs'));
     }
 
     public function Visitor(){
         $this->AuthorizeOrGoToAdmin("view-error-log");
-        return $this->view->ViewAllVisitorSummary();
+        $logs = $this->model->fetchVisitorSummary();
+        return $this->View('admin.logger_visitor', compact('logs'));
     }
 
     public function VisitorVerbose(){
         $this->AuthorizeOrGoToAdmin("view-error-log");
-        return $this->view->ViewAllVisitors();
+        $logs = $this->model->fetchAllVisitor();
+        return $this->View('admin.logger_visitor_verbose', compact('logs'));
     }
 
 }
