@@ -26,44 +26,55 @@ class AdminController  extends AbstractAdminController
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
         $slide = new Slide();
+        return $this->View("admin.slider_create", compact('slide'));
+    }
 
-        if($this->requestMethod() == 'POST' &&
-            $slide->uploadFile()
-        ){
+    public function post_Create()
+    {
+        $slide = new Slide();
+        if($slide->uploadFile()){
             $slide->setName($_POST["name"]);
             $slide->setAlignment($_POST["alignment"]);
             if($this->repository->save($slide)) {
+                setFlash('Slider created!', 'success');
                 $this->Redirect('/admin/slider');
             }
         }
-
+        setFlash('There was an error!', 'error');
         return $this->View("admin.slider_create", compact('slide'));
     }
 
     public function Edit($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
-
         $slide = $this->repository->find($id) ?? $this->Redirect('/admin/slider');
+        return $this->View("admin.slider_edit", compact('slide'));
+    }
+
+    public function put_Edit($id)
+    {
+        $this->AuthorizeOrGoToAdmin("manage-slider");
+        $slide = $this->repository->find($id) ?? $this->Reload();
         /* @var $slide Slide */
 
-        if($this->requestMethod() == 'POST'){
-            if($this->hasFile()){
-                $slide->uploadFile();
-            }
-
-            $slide->setName($_POST["name"]);
-            $slide->setAlignment($_POST["alignment"]);
-
-            if($this->repository->save($slide)) {
-                $this->Redirect('/admin/slider');
-            }
+        if($this->hasFile()){
+            $slide->uploadFile();
         }
+
+        $slide->setName($_POST["name"]);
+        $slide->setAlignment($_POST["alignment"]);
+
+        if($this->repository->save($slide)) {
+            setFlash('Slider saved!', 'success');
+            $this->Redirect('/admin/slider');
+        }
+
+        setFlash('There was an error!', 'error');
 
         return $this->View("admin.slider_edit", compact('slide'));
     }
 
-    public function Delete($id)
+    public function delete_Delete($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-slider");
 

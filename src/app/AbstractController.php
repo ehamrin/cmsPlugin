@@ -42,10 +42,20 @@ class AbstractController
     }
 
     protected function requestMethod(){
-        return $_SERVER['REQUEST_METHOD'];
+        $method = $_SERVER['REQUEST_METHOD'];
+        $allowed = ['PUT', 'DELETE'];
+
+        if($method == 'POST' && isset($_POST['_method'])){
+            $submitted = strtoupper($_POST['_method']);
+            if(in_array($submitted, $allowed)){
+                $method = $submitted;
+            }
+        }
+
+        return $method;
     }
 
-    public function hasFile(){
+    protected function hasFile(){
         if(isset($_FILES) && is_array($_FILES)){
             foreach ($_FILES as $name => $item) {
                 if(!empty($item["name"])){
@@ -56,9 +66,14 @@ class AbstractController
         return false;
     }
 
-    public function Redirect($location){
+    protected function Redirect($location){
         header('Location: ' . $location);
         die();
+    }
+
+    protected function Reload()
+    {
+        $this->Redirect($_SERVER['REQUEST_URI']);
     }
 
 }

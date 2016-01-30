@@ -19,7 +19,12 @@ abstract class AbstractPlugin implements \IPlugin
             $controllerObj = $this->{$controllerName} ?? new $className($this->application);
 
             $method = str_replace(['_','-'], '', $method);
-            if(method_exists($controllerObj, $method)){
+
+            $specificForRequest = strtolower($this->requestMethod()) . '_' .  $method;
+            if(method_exists($controllerObj, $specificForRequest)){
+                return $controllerObj->{$specificForRequest}(...$params);
+            }
+            elseif(method_exists($controllerObj, $method)){
                 return $controllerObj->{$method}(...$params);
             }
         }
@@ -63,6 +68,20 @@ abstract class AbstractPlugin implements \IPlugin
         \Database::GetConnection()->exec("
           DROP TABLE IF EXISTS `$table`
         ");
+    }
+
+    private function requestMethod(){
+        $method = $_SERVER['REQUEST_METHOD'];
+        $allowed = ['PUT', 'DELETE'];
+
+        if($method == 'POST' && isset($_POST['_method'])){
+            $submitted = strtoupper($_POST['_method']);
+            if(in_array($submitted, $allowed)){
+                $method = $submitted;
+            }
+        }
+
+        return $method;
     }
 
 }

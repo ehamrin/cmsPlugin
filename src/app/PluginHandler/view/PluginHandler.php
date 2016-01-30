@@ -50,7 +50,6 @@ class PluginHandler
             }else{
                 $ret[$key] = $plugin['action'];
             }
-
         }
         return $ret;
     }

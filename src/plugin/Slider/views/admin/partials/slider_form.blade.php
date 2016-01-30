@@ -1,4 +1,5 @@
 <form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_method" value="{{ $method }}" />
     <div class="form-group">
         <strong>Name</strong>
         <input type="text" name="name" value="{{ $slide->getName() }}"/>

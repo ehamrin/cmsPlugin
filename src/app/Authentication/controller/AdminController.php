@@ -28,26 +28,27 @@ class AdminController extends AbstractAdminController
         $this->AuthorizeOrGoToAdmin("manage-user");
         $user = new model\User('', '', 0);
 
-        if($this->requestMethod() == 'POST'){
-            $user = new model\User($_POST['username'], $_POST['password'], 0);
+        $permissions = $this->getPermissions();
+        return $this->view('user_add', compact('permissions', 'user'));
+    }
 
-            if(isset($_POST['permission']) && is_array($_POST['permission'])){
-                foreach($_POST['permission'] as $permission){
-                    $user->AddPermission($permission);
-                }
+    public function post_Add()
+    {
+        $user = new model\User($_POST['username'], $_POST['password'], 0);
+
+        if(isset($_POST['permission']) && is_array($_POST['permission'])){
+            foreach($_POST['permission'] as $permission){
+                $user->AddPermission($permission);
             }
-
-
-            if($this->model->Create($user)){
-                setFlash('You added a new user!', 'success');
-
-                $this->Redirect('/admin/user');
-            }
-            setFlash('There was an error adding the user', 'error');
         }
 
-        $permissions = $this->getPermissions();
+        if($this->model->Create($user)){
+            setFlash('You added a new user!', 'success');
 
+            $this->Redirect('/admin/user');
+        }
+        setFlash('There was an error adding the user', 'error');
+        $permissions = $this->getPermissions();
         return $this->view('user_add', compact('permissions', 'user'));
     }
 
@@ -73,7 +74,7 @@ class AdminController extends AbstractAdminController
         return $this->View('user_edit', compact('user', 'permissions'));
     }
 
-    public function Delete($id)
+    public function delete_Delete($id)
     {
         $this->AuthorizeOrGoToAdmin("manage-user");
 
