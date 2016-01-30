@@ -22,7 +22,6 @@ $(document).ready(function(){
                     type: 'DELETE',
                     success: function(data) {
                         element.parentsUntil('tr').parent().remove();
-                        swal("Deleted!", "Your item has been deleted.", "success");
                     }
                 });
 
@@ -42,7 +41,7 @@ $(document).ready(function(){
             confirmButtonColor: "#5dc2f1",
             confirmButtonText: "Yes!",
             cancelButtonText: "No!",
-            closeOnConfirm: false,
+            closeOnConfirm: true,
             closeOnCancel: true
         }, function (isConfirm) {
             if (isConfirm) {
@@ -62,7 +61,7 @@ $(document).ready(function(){
                 title: "Sweet!",
                 text: element.text(),
                 type: "success",
-                timer: 2000,
+                timer: 1500,
                 confirmButtonText: "Ok!"
             });
     });

@@ -18,7 +18,7 @@ abstract class AbstractPlugin implements \IPlugin
             $className = $this->getNamespace() . "\\controller\\" . $controllerName;
             $controllerObj = $this->{$controllerName} ?? new $className($this->application);
 
-            $method = str_replace(['_','-'], '', $method);
+            $method = str_replace(['put_', 'delete_', 'post_', '_','-'], '', $method);
 
             $specificForRequest = strtolower($this->requestMethod()) . '_' .  $method;
             if(method_exists($controllerObj, $specificForRequest)){

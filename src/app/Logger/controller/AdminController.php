@@ -5,15 +5,13 @@ namespace app\Logger\controller;
 
 
 use app\Logger\model\LoggerModel;
-use app\Logger\view\LoggerView;
 
 class AdminController extends \app\Admin\AbstractAdminController
 {
-    public function __construct($application, LoggerModel $model, LoggerView $view)
+    public function __construct($application, LoggerModel $model)
     {
         parent::__construct($application);
         $this->model = $model;
-        $this->view = $view;
     }
 
     public function Index(){
